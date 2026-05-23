@@ -1,190 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Rhockstar Nation</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<title>Test Page</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
-.page{display:none;padding:20px}
+.page{display:none}
 .active{display:block}
-
-.nav{background:#111;padding:10px}
-.nav button{margin:5px;padding:10px;cursor:pointer}
-
-.card{background:#1a1a1a;padding:15px;margin:10px 0;border-radius:10px}
-input,select,textarea{width:100%;padding:10px;margin:5px 0}
-
-.btn{padding:10px;background:#00ffcc;border:none;cursor:pointer;width:100%}
-.service{cursor:pointer}
-.service:hover{background:#222}
+.card{
+padding:20px;
+margin:10px;
+background:#222;
+color:white;
+cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
-<div class="nav">
-<button onclick="show('home')">Home</button>
-<button onclick="show('services')">Services</button>
-<button onclick="show('orders')">Orders</button>
-<button onclick="show('admin')">Admin</button>
-<button onclick="show('login')">Login</button>
+<div class="card" onclick="show('services')">
+Click Me → Go to Services
 </div>
 
-<!-- HOME -->
 <div id="home" class="page active">
-<h2>Welcome to Rhockstar Nation</h2>
+<h1>HOME PAGE</h1>
 </div>
 
-<!-- SERVICES -->
 <div id="services" class="page">
+<h1>SERVICES PAGE</h1>
 
-<div class="card service" onclick="selectService('Advert Placement')">Advert Placement</div>
-<div class="card service" onclick="selectService('Certificate Editing')">Certificate Editing</div>
-<div class="card service" onclick="selectService('Document Editing')">Document Editing</div>
-<div class="card service" onclick="selectService('Graphics Design')">Graphics Design</div>
-<div class="card service" onclick="selectService('Logo Design')">Logo Design</div>
-<div class="card service" onclick="selectService('Web Design')">Web Design</div>
-<div class="card service" onclick="selectService('Web Development')">Web Development</div>
-
+<div class="card" onclick="alert('Service clicked working')">
+Click Service
 </div>
 
-<!-- ORDERS -->
-<div id="orders" class="page">
-<h2>Place Order</h2>
-
-<input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone">
-
-<select id="service">
-<option>Advert Placement</option>
-<option>Certificate Editing</option>
-<option>Document Editing</option>
-<option>Graphics Design</option>
-<option>Logo Design</option>
-<option>Web Design</option>
-<option>Web Development</option>
-</select>
-
-<textarea id="desc" placeholder="Description"></textarea>
-
-<button class="btn" onclick="pay()">Pay with Paystack</button>
-<button class="btn" onclick="submitOrder()">Submit Order</button>
-
-</div>
-
-<!-- LOGIN -->
-<div id="login" class="page">
-<h2>Admin Login</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button class="btn" onclick="login()">Login</button>
-</div>
-
-<!-- ADMIN -->
-<div id="admin" class="page">
-<h2>Admin Panel</h2>
-<p id="status">Not logged in</p>
-<div id="ordersList"></div>
 </div>
 
 <script>
-
-// FIREBASE
-const firebaseConfig = {
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-projectId:"YOUR_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// PAGE SWITCH
 function show(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.page').forEach(p=>{
+p.classList.remove('active');
+});
 document.getElementById(id).classList.add('active');
 }
-
-// SERVICE SELECT
-function selectService(service){
-show('orders');
-document.getElementById('service').value = service;
-}
-
-// PAYSTACK (SAFE)
-function pay(){
-let handler = PaystackPop.setup({
-key:'pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0',
-email:prompt("Enter email"),
-amount:5000*100,
-currency:"NGN",
-callback:function(res){
-alert("Paid: "+res.reference);
-},
-onClose:function(){
-alert("Payment closed");
-}
-});
-handler.openIframe();
-}
-
-// ORDER SUBMIT
-function submitOrder(){
-if(!name.value||!phone.value){
-alert("Fill all fields");
-return;
-}
-
-db.collection("orders").add({
-name:name.value,
-phone:phone.value,
-service:service.value,
-desc:desc.value,
-status:"Pending",
-createdAt:new Date()
-});
-
-alert("Order sent");
-show('home');
-}
-
-// LOGIN
-function login(){
-auth.signInWithEmailAndPassword(email.value,password.value)
-.then(()=>show('admin'))
-.catch(e=>alert(e.message));
-}
-
-// LOAD ORDERS
-function load(){
-db.collection("orders").onSnapshot(snap=>{
-ordersList.innerHTML="";
-snap.forEach(d=>{
-let o=d.data();
-ordersList.innerHTML+=`
-<div class="card">
-<h3>${o.name}</h3>
-<p>${o.service}</p>
-<p>${o.status}</p>
-</div>`;
-});
-});
-}
-
-// AUTH STATE
-auth.onAuthStateChanged(user=>{
-if(user){
-status.innerText="Logged in "+user.email;
-load();
-}
-});
-
 </script>
 
 </body>
