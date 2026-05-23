@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rhockstar Nation - Paystack SaaS Platform</title>
+<title>Rhockstar Nation - SaaS Platform</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -19,7 +19,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
 body{background:#0b0b0b;color:#fff;display:flex;min-height:100vh;}
-.sidebar{width:250px;background:#111;position:fixed;height:100%;padding:20px;overflow:auto;}
+.sidebar{width:250px;position:fixed;height:100%;background:#111;padding:20px;overflow:auto;}
 .logo img{width:120px;border-radius:10px;margin-bottom:15px;}
 .sidebar button{width:100%;padding:12px;margin-bottom:10px;background:#1b1b1b;color:#fff;border:none;border-radius:10px;cursor:pointer;text-align:left;}
 .sidebar button:hover{background:#00ffcc;color:#000;}
@@ -34,6 +34,8 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 .pending{background:orange;color:#000;}
 .progress{background:blue;}
 .completed{background:green;}
+.service-card{cursor:pointer;transition:0.2s;}
+.service-card:hover{transform:scale(1.02);background:#1f1f1f;}
 </style>
 </head>
 
@@ -41,7 +43,7 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 
 <div class="sidebar">
 <div class="logo">
-<img id="siteLogo" src="https://via.placeholder.com/120" alt="logo">
+<img id="siteLogo" src="https://via.placeholder.com/120">
 </div>
 <button onclick="show('dashboard')">Dashboard</button>
 <button onclick="show('services')">Services</button>
@@ -65,41 +67,14 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <!-- SERVICES -->
 <div id="services" class="page">
 
-<div class="card" onclick="selectService('Advert Placement')" style="cursor:pointer">
-<h3>Advert Placement</h3>
-</div>
+<div class="card service-card" onclick="selectService('Advert Placement')"><h3>Advert Placement</h3></div>
+<div class="card service-card" onclick="selectService('Certificate Editing')"><h3>Certificate Editing</h3></div>
+<div class="card service-card" onclick="selectService('Document Editing')"><h3>Document Editing</h3></div>
+<div class="card service-card" onclick="selectService('Graphics Design')"><h3>Graphics Design</h3></div>
+<div class="card service-card" onclick="selectService('Logo Design')"><h3>Logo Design</h3></div>
+<div class="card service-card" onclick="selectService('Web Design')"><h3>Web Design</h3></div>
+<div class="card service-card" onclick="selectService('Web Development')"><h3>Web Development</h3></div>
 
-<div class="card" onclick="selectService('Certificate Editing')" style="cursor:pointer">
-<h3>Certificate Editing</h3>
-</div>
-
-<div class="card" onclick="selectService('Document Editing')" style="cursor:pointer">
-<h3>Document Editing</h3>
-</div>
-
-<div class="card" onclick="selectService('Graphics Design')" style="cursor:pointer">
-<h3>Graphics Design</h3>
-</div>
-
-<div class="card" onclick="selectService('Logo Design')" style="cursor:pointer">
-<h3>Logo Design</h3>
-</div>
-
-<div class="card" onclick="selectService('Web Design')" style="cursor:pointer">
-<h3>Web Design</h3>
-</div>
-
-<div class="card" onclick="selectService('Web Development')" style="cursor:pointer">
-<h3>Web Development</h3>
-</div>
-
-</div>
-<div class="card"><h3>Certificate Editing</h3></div>
-<div class="card"><h3>Document Editing</h3></div>
-<div class="card"><h3>Graphics Design</h3></div>
-<div class="card"><h3>Logo Design</h3></div>
-<div class="card"><h3>Web Design</h3></div>
-<div class="card"><h3>Web Development</h3><p>₦200k - ₦500k</p></div>
 </div>
 
 <!-- ORDERS -->
@@ -108,6 +83,7 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <h2>Place Order</h2>
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
+
 <select id="service">
 <option>Advert Placement</option>
 <option>Certificate Editing</option>
@@ -117,12 +93,8 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <option>Web Design</option>
 <option>Web Development</option>
 </select>
-<textarea id="desc" placeholder="Project details"></textarea>
 
-<select id="bank">
-<option value="opay">Opay - 8074647269</option>
-<option value="gtbank">GTBank - 0167798627</option>
-</select>
+<textarea id="desc" placeholder="Project details"></textarea>
 
 <button class="btn" onclick="payWithPaystack()">Pay with Paystack</button>
 <button class="btn" onclick="submitOrder()">Submit Order</button>
@@ -130,8 +102,8 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 
 <div class="card">
 <h3>Payment Accounts</h3>
-<p>Opay: 8074647269</p>
-<p>GTBank: 0167798627</p>
+<p>Opay: 8074647269 (Elijah Peter)</p>
+<p>GTBank: 0167798627 (Peter Elijah)</p>
 <p>WhatsApp: 2348074647269</p>
 </div>
 </div>
@@ -139,9 +111,9 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <!-- PORTFOLIO -->
 <div id="portfolio" class="page">
 <div class="card">
-<h2>Upload Logo / Works</h2>
-<input type="file" id="file">
-<button class="btn" onclick="uploadFile()">Upload</button>
+<h2>Upload Works / Logo</h2>
+<input type="file" id="fileUpload">
+<button class="btn" onclick="uploadWork()">Upload</button>
 </div>
 <div id="portfolioList"></div>
 </div>
@@ -170,7 +142,7 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <script>
 
 const firebaseConfig = {
-apiKey:"AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
+apiKey:"AIzaSyApIqqO8AfmyA3N6JofFGxKo6nXXc",
 authDomain:"rhockstar-admin.firebaseapp.com",
 projectId:"rhockstar-admin",
 storageBucket:"rhockstar-admin.appspot.com",
@@ -179,6 +151,7 @@ appId:"1:66440765531:web:9b0d3fd8b110defac29f7e"
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
@@ -188,83 +161,80 @@ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* PAYSTACK INTEGRATION */
-function payWithPaystack(){
+function selectService(service){
+show('orders');
+document.getElementById('service').value = service;
+}
 
-const email = prompt("Enter email for receipt");
-const amount = 5000 * 100;
+function payWithPaystack(){
+const email = prompt("Enter email");
+let amount = 5000 * 100;
 
 let handler = PaystackPop.setup({
-key: 'pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0',
-email: email,
-amount: amount,
-currency: "NGN",
-onClose: function(){
-alert('Payment cancelled');
+key:'pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0',
+email:email,
+amount:amount,
+currency:'NGN',
+callback:function(res){
+alert('Payment successful '+res.reference);
 },
-callback: function(response){
-alert('Payment successful: ' + response.reference);
-}
+onClose:function(){alert('Payment closed');}
 });
-
 handler.openIframe();
 }
 
 function submitOrder(){
+if(!name.value||!phone.value){alert('Fill all fields');return;}
 
-db.collection("orders").add({
+db.collection('orders').add({
 name:name.value,
 phone:phone.value,
 service:service.value,
 desc:desc.value,
-status:"Pending",
+status:'Pending',
 createdAt:new Date()
 });
 
-alert("Order submitted");
+alert('Order submitted');
 show('dashboard');
 }
 
-/* LOGO UPLOAD */
-function uploadFile(){
-const file = document.getElementById('file').files[0];
-const ref = storage.ref('uploads/'+file.name);
-ref.put(file).then(()=>alert("Uploaded"));
-}
-
-function login(){
-auth.signInWithEmailAndPassword(email.value,password.value)
-.then(()=>show('admin'))
-.catch(e=>alert(e.message));
+function uploadWork(){
+const file=fileUpload.files[0];
+const ref=storage.ref('portfolio/'+file.name);
+ref.put(file).then(()=>alert('Uploaded'));
 }
 
 function loadOrders(){
-db.collection("orders").orderBy("createdAt","desc")
+db.collection('orders').orderBy('createdAt','desc')
 .onSnapshot(snap=>{
-ordersList.innerHTML="";
+ordersList.innerHTML='';
+let t=0,p=0,c=0;
 snap.forEach(doc=>{
-let o = doc.data();
-ordersList.innerHTML += `
+let o=doc.data();
+t++;if(o.status==='Pending')p++;if(o.status==='Completed')c++;
+ordersList.innerHTML+=`
 <div class='card'>
 <h3>${o.name}</h3>
 <p>${o.service}</p>
 <span class='status ${o.status.toLowerCase()}'>${o.status}</span>
-</div>
-`;
+</div>`;
 });
+document.getElementById('t').innerText=t;
+document.getElementById('p').innerText=p;
+document.getElementById('c').innerText=c;
 });
 }
 
 auth.onAuthStateChanged(user=>{
 if(user){
-status.innerText="Logged in as " + user.email;
+status.innerText='Logged in '+user.email;
 loadOrders();
 }else{
-status.innerText="Not logged in";
+status.innerText='Not logged in';
 }
 });
 
-</script>
-
-</body>
-</html>
+function login(){
+auth.signInWithEmailAndPassword(email.value,password.value)
+.t
