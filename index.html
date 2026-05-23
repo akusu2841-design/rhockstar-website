@@ -1,211 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Rhockstar Nation</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rhockstar Nation</title>
 
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0a0a0a;
-      color: white;
-    }
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    /* NAV */
-    .nav {
-      background: #111;
-      padding: 12px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      position: sticky;
-      top: 0;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
 
-    .nav button {
-      background: #222;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+body{
+  background:#0b0b0b;
+  color:#fff;
+  scroll-behavior:smooth;
+}
 
-    .nav button:hover {
-      background: #00ffcc;
-      color: black;
-    }
+/* NAV */
+.nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:#111;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:12px;
+  z-index:999;
+}
 
-    /* PAGE SYSTEM */
-    .page {
-      display: none;
-      height: 100vh;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-    }
+.nav button{
+  background:#222;
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    .active {
-      display: flex;
-    }
+.nav button:hover{
+  background:#00ffcc;
+  color:#000;
+}
 
-    /* CARD */
-    .card {
-      background: #1a1a1a;
-      padding: 25px;
-      border-radius: 12px;
-      width: 320px;
-    }
+/* HERO */
+.hero{
+  padding-top:90px;
+  text-align:center;
+  padding-bottom:40px;
+}
 
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-    }
+.hero h1{
+  font-size:28px;
+}
 
-    .btn {
-      background: #00ffcc;
-      border: none;
-      padding: 12px;
-      margin-top: 10px;
-      width: 100%;
-      cursor: pointer;
-      border-radius: 8px;
-    }
+.hero p{
+  opacity:0.7;
+}
 
-    .btn:hover {
-      background: #00c9a7;
-    }
-  </style>
+/* CONTAINER */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+/* CARD */
+.card{
+  background:#151515;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:15px;
+  box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
+
+/* ACCORDION */
+.service{
+  cursor:pointer;
+  padding:15px;
+  background:#1c1c1c;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+.service-content{
+  display:none;
+  padding:15px;
+  background:#111;
+  border-radius:10px;
+}
+
+.btn{
+  background:#00ffcc;
+  border:none;
+  padding:10px;
+  margin-top:10px;
+  width:100%;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.btn:hover{
+  background:#00c9a7;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:15px;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:30px;
+  opacity:0.6;
+}
+
+/* PAGE SYSTEM */
+.page{display:none;padding-top:80px;}
+.active{display:block;}
+</style>
 </head>
 
 <body>
 
 <!-- NAV -->
 <div class="nav">
-  <button onclick="openPage('home')">Home</button>
-  <button onclick="openPage('orders')">Orders</button>
-  <button onclick="openPage('admin')">Admin</button>
-  <button onclick="openPage('login')">Login</button>
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('services')">Services</button>
+  <button onclick="show('orders')">Orders</button>
+  <button onclick="show('login')">Login</button>
+  <button onclick="show('admin')">Admin</button>
 </div>
 
 <!-- HOME -->
 <div id="home" class="page active">
-  <div class="card">
-    <h2>Welcome to Rhockstar Nation 🚀</h2>
+  <div class="hero">
+    <h1>Rhockstar Nation 🚀</h1>
+    <p>Premium design, ads, and web services</p>
   </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>Welcome</h3>
+      <p>We deliver fast and professional digital services.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div id="services" class="page">
+<div class="container">
+
+<h2>Services</h2>
+
+<!-- SERVICE 1 -->
+<div class="service" onclick="toggle(this)">Advert Placement</div>
+<div class="service-content">
+  <p>24H ₦5k | 3 Days ₦15k | 1 Month ₦100k</p>
+  <button class="btn">Order Now</button>
+  <button class="btn">Pay Half</button>
+  <button class="btn">Pay Full</button>
+  <button class="btn">WhatsApp Order</button>
+</div>
+
+<!-- SERVICE 2 -->
+<div class="service" onclick="toggle(this)">Certificate Editing ₦40,000</div>
+<div class="service-content">
+  <p>Upload certificate for editing</p>
+  <button class="btn">Order Now</button>
+</div>
+
+<!-- SERVICE 3 -->
+<div class="service" onclick="toggle(this)">Document Editing ₦30,000</div>
+<div class="service-content">
+  <p>Professional document editing service</p>
+  <button class="btn">Order Now</button>
+</div>
+
+<!-- SERVICE 4 -->
+<div class="service" onclick="toggle(this)">Graphics Design ₦15,000</div>
+<div class="service-content">
+  <p>Flyers, posters, banners, cards</p>
+  <button class="btn">Order Now</button>
+</div>
+
+<!-- SERVICE 5 -->
+<div class="service" onclick="toggle(this)">Logo Design ₦10,000</div>
+<div class="service-content">
+  <p>Minimal, luxury, 3D, mascot logos</p>
+  <button class="btn">Order Now</button>
+</div>
+
+<!-- SERVICE 6 -->
+<div class="service" onclick="toggle(this)">Web Design ₦120k+</div>
+<div class="service-content">
+  <p>Full business websites & apps</p>
+  <button class="btn">Order Now</button>
+</div>
+
+</div>
 </div>
 
 <!-- ORDERS -->
 <div id="orders" class="page">
-  <div class="card">
-    <h2>Place Order</h2>
+<div class="container">
+<div class="card">
+<h3>Order Form</h3>
 
-    <form id="orderForm">
-      <input id="name" placeholder="Name" required>
-      <input id="phone" placeholder="Phone" required>
+<input placeholder="Name">
+<input placeholder="Phone">
+<textarea placeholder="Details"></textarea>
 
-      <select id="service">
-        <option value="Graphic Design|15000">Graphic Design</option>
-        <option value="Video Editing|60000">Video Editing</option>
-        <option value="Document Design|30000">Document Design</option>
-      </select>
+<button class="btn">Submit Order</button>
 
-      <textarea id="desc" placeholder="Description"></textarea>
-
-      <button class="btn" type="submit">Submit Order</button>
-    </form>
-  </div>
 </div>
-
-<!-- ADMIN -->
-<div id="admin" class="page">
-  <div class="card">
-    <h2>Admin Panel</h2>
-    <p id="adminStatus">Checking login...</p>
-  </div>
+</div>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="page">
-  <div class="card">
-    <h2>Login</h2>
-
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-
-    <button class="btn" onclick="login()">Login</button>
-  </div>
+<div class="container">
+<div class="card">
+<h3>Login</h3>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button class="btn" onclick="login()">Login</button>
+</div>
+</div>
 </div>
 
+<!-- ADMIN -->
+<div id="admin" class="page">
+<div class="container">
+<div class="card">
+<h3>Admin Panel</h3>
+<p id="status">Checking login...</p>
+</div>
+</div>
+</div>
+
+<footer>
+© Rhockstar Nation
+</footer>
+
 <script>
-  // Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
-    authDomain: "rhockstar-admin.firebaseapp.com",
-    projectId: "rhockstar-admin",
-    storageBucket: "rhockstar-admin.firebasestorage.app",
-    messagingSenderId: "66440765531",
-    appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
-  };
+const firebaseConfig = {
+ apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
+ authDomain: "rhockstar-admin.firebaseapp.com",
+ projectId: "rhockstar-admin",
+ storageBucket: "rhockstar-admin.firebasestorage.app",
+ messagingSenderId: "66440765531",
+ appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
+};
 
-  firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+function show(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(page).classList.add('active');
+}
 
-  // PAGE NAVIGATION (FEELS LIKE REAL PAGE)
-  function openPage(pageId) {
-    document.querySelectorAll(".page").forEach(p => {
-      p.classList.remove("active");
-    });
+function toggle(el){
+ let next = el.nextElementSibling;
+ next.style.display = next.style.display === "block" ? "none" : "block";
+}
 
-    document.getElementById(pageId).classList.add("active");
-  }
+function login(){
+ const email = document.getElementById('email').value;
+ const pass = document.getElementById('password').value;
 
-  // LOGIN
-  function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+ auth.signInWithEmailAndPassword(email,pass)
+ .then(()=>show('admin'))
+ .catch(e=>alert(e.message));
+}
 
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        openPage("admin");
-      })
-      .catch(err => alert(err.message));
-  }
-
-  // PROTECT ADMIN PAGE
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      document.getElementById("adminStatus").innerText = "Logged in as Admin ✅";
-    } else {
-      document.getElementById("adminStatus").innerText = "Not logged in ❌";
-    }
-  });
-
-  // ORDER
-  document.getElementById("orderForm").addEventListener("submit", e => {
-    e.preventDefault();
-
-    db.collection("orders").add({
-      name: name.value,
-      phone: phone.value,
-      service: service.value,
-      description: desc.value,
-      time: new Date()
-    });
-
-    alert("Order submitted 🚀");
-    document.getElementById("orderForm").reset();
-  });
+auth.onAuthStateChanged(user=>{
+ document.getElementById("status").innerText =
+ user ? "Logged in ✔" : "Not logged in ❌";
+});
 </script>
 
 </body>
