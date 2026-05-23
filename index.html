@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Rhockstar Nation SaaS</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
 
 <style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
 body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0b0b0b,#1a1a1a);
+background:linear-gradient(135deg,#0b0b0b,#141414);
 color:white;
+min-height:100vh;
 }
 
 /* NAV */
@@ -23,6 +24,7 @@ padding:10px;
 background:#111;
 position:sticky;
 top:0;
+z-index:10;
 }
 
 .nav button{
@@ -30,33 +32,33 @@ padding:10px;
 border:none;
 background:#222;
 color:white;
-cursor:pointer;
 border-radius:8px;
+cursor:pointer;
 }
 
 .nav button:hover{
 background:#00ffcc;
-color:black;
+color:#000;
 }
 
-/* PAGES */
-.page{display:none;padding:20px;}
-.active{display:block;animation:fade .3s ease;}
+/* PAGE */
+.page{display:none;padding:20px}
+.active{display:block;animation:fade .25s ease}
 
 @keyframes fade{
 from{opacity:0;transform:translateY(10px)}
 to{opacity:1;transform:translateY(0)}
 }
 
-/* CARDS */
+/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
 padding:15px;
 margin:10px 0;
 border-radius:12px;
-border:1px solid rgba(255,255,255,0.1);
 cursor:pointer;
-transition:0.2s;
+transition:.2s;
 }
 
 .card:hover{
@@ -82,22 +84,14 @@ padding:12px;
 margin-top:10px;
 border:none;
 border-radius:10px;
-cursor:pointer;
 background:#00ffcc;
 font-weight:bold;
+cursor:pointer;
 }
 
-button:hover{
-background:#00ddb3;
-}
+button:hover{background:#00ddb3}
 
-/* TITLE */
-h2{margin-top:0}
-
-.service-title{
-font-size:18px;
-font-weight:bold;
-}
+h2{margin-bottom:10px}
 </style>
 </head>
 
@@ -113,50 +107,30 @@ font-weight:bold;
 
 <!-- HOME -->
 <div id="home" class="page active">
-<h2>Welcome to Rhockstar Nation 🚀</h2>
-<p>Your all-in-one creative service platform.</p>
+<h2>Rhockstar Nation 🚀</h2>
+<p>Creative SaaS platform for digital services.</p>
 </div>
 
 <!-- SERVICES -->
 <div id="services" class="page">
 <h2>Services</h2>
 
-<div class="card" onclick="selectService('Advert Placement')">
-<div class="service-title">📢 Advert Placement</div>
-</div>
-
-<div class="card" onclick="selectService('Certificate Editing')">
-<div class="service-title">📜 Certificate Editing</div>
-</div>
-
-<div class="card" onclick="selectService('Document Editing')">
-<div class="service-title">📄 Document Editing</div>
-</div>
-
-<div class="card" onclick="selectService('Graphics Design')">
-<div class="service-title">🎨 Graphics Design</div>
-</div>
-
-<div class="card" onclick="selectService('Logo Design')">
-<div class="service-title">🧠 Logo Design</div>
-</div>
-
-<div class="card" onclick="selectService('Web Design')">
-<div class="service-title">🌐 Web Design</div>
-</div>
-
-<div class="card" onclick="selectService('Web Development')">
-<div class="service-title">💻 Web Development</div>
-</div>
+<div class="card" onclick="selectService('Advert Placement')">📢 Advert Placement</div>
+<div class="card" onclick="selectService('Certificate Editing')">📜 Certificate Editing</div>
+<div class="card" onclick="selectService('Document Editing')">📄 Document Editing</div>
+<div class="card" onclick="selectService('Graphics Design')">🎨 Graphics Design</div>
+<div class="card" onclick="selectService('Logo Design')">🧠 Logo Design</div>
+<div class="card" onclick="selectService('Web Design')">🌐 Web Design</div>
+<div class="card" onclick="selectService('Web Development')">💻 Web Development</div>
 
 </div>
 
-<!-- ORDERS -->
+<!-- ORDER -->
 <div id="orders" class="page">
-<h2>Place Order</h2>
+<h2>Place Order (Payment Required)</h2>
 
-<input id="name" placeholder="Your Name">
-<input id="phone" placeholder="Phone Number">
+<input id="name" placeholder="Your Name" />
+<input id="phone" placeholder="Phone Number" />
 
 <select id="service">
 <option>Advert Placement</option>
@@ -170,16 +144,14 @@ font-weight:bold;
 
 <textarea id="desc" placeholder="Describe your project"></textarea>
 
-<button onclick="pay()">Pay with Paystack</button>
-<button onclick="submitOrder()">Submit Order (Without Payment)</button>
-
+<button onclick="pay()">Pay & Submit Order</button>
 </div>
 
 <!-- ADMIN -->
 <div id="admin" class="page">
 <h2>Admin Panel</h2>
 
-<input id="adminPass" type="password" placeholder="Enter Admin Password">
+<input id="adminPass" type="password" placeholder="Admin Password"/>
 <button onclick="loginAdmin()">Login</button>
 
 <div id="adminBox" style="display:none;">
@@ -191,85 +163,88 @@ font-weight:bold;
 
 <script>
 
-/* PAGE SWITCH */
+/* NAV */
 function show(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* SELECT SERVICE */
+/* SERVICE SELECT */
 function selectService(service){
-document.getElementById('service').value = service;
+document.getElementById("service").value = service;
 show('orders');
 }
 
-/* ORDERS STORAGE */
+/* ORDERS DB */
 let orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
-/* SUBMIT ORDER */
-function submitOrder(){
-
-if(!name.value || !phone.value){
-alert("Fill all fields");
-return;
-}
-
+/* SAVE ORDER */
+function saveOrder(reference){
 orders.push({
 name:name.value,
 phone:phone.value,
 service:service.value,
 desc:desc.value,
-status:"Pending"
+status:"Paid",
+ref:reference
 });
 
 localStorage.setItem("orders", JSON.stringify(orders));
 
-alert("Order saved");
+alert("Payment successful & order saved 🚀");
 show('admin');
 loadOrders();
 }
 
 /* LOAD ORDERS */
 function loadOrders(){
-ordersList.innerHTML="";
+ordersList.innerHTML = "";
 
-orders.forEach((o,i)=>{
+orders.forEach(o=>{
 ordersList.innerHTML += `
 <div class="card">
-<p><b>${o.name}</b></p>
-<p>${o.service}</p>
-<p>${o.phone}</p>
-<p>Status: ${o.status}</p>
-</div>
-`;
+<b>${o.name}</b><br>
+${o.service}<br>
+${o.phone}<br>
+Status: ${o.status}<br>
+Ref: ${o.ref}
+</div>`;
 });
 }
 
-/* ADMIN LOGIN (SIMPLE SAFE VERSION) */
+/* ADMIN LOGIN */
 function loginAdmin(){
 if(adminPass.value === "1234"){
-document.getElementById("adminBox").style.display="block";
+adminBox.style.display = "block";
 loadOrders();
 }else{
 alert("Wrong password");
 }
 }
 
-/* PAYSTACK */
+/* PAYSTACK (FINAL LOCK SYSTEM) */
 function pay(){
+
+if(!name.value || !phone.value || !desc.value){
+alert("Fill all fields before payment");
+return;
+}
+
 let handler = PaystackPop.setup({
-key:'pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0',
-email:prompt("Enter email"),
-amount:5000*100,
+key:"pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0",
+email:prompt("Enter email for receipt"),
+amount:5000 * 100,
 currency:"NGN",
+
 callback:function(res){
-alert("Payment successful: " + res.reference);
-submitOrder();
+saveOrder(res.reference);
 },
+
 onClose:function(){
-alert("Payment closed");
+alert("Payment cancelled");
 }
 });
+
 handler.openIframe();
 }
 
