@@ -1,65 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Login</title>
-
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-</head>
-
-<body>
-
-<h2>Login Page</h2>
-
-<input id="email" placeholder="Email"><br><br>
-<input id="password" type="password" placeholder="Password"><br><br>
-
-<button onclick="login()">Login</button>
-
 <script>
-
-// 🔥 PUT YOUR FIREBASE CONFIG HERE
 const firebaseConfig = {
-apiKey: // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
-authDomain: "rhockstar-admin.firebaseapp.com",
-projectId: "rhockstar-admin",
-storageBucket: "rhockstar-admin.firebasestorage.app",
-messagingSenderId: "66440765531",
-appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);,
-authDomain: "PASTE_HERE",
-projectId: "PASTE_HERE"
+  apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
+  authDomain: "rhockstar-admin.firebaseapp.com",
+  projectId: "rhockstar-admin",
+  storageBucket: "rhockstar-admin.firebasestorage.app",
+  messagingSenderId: "66440765531",
+  appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
-function login(){
-let email = document.getElementById("email").value;
-let password = document.getElementById("password").value;
-
-auth.signInWithEmailAndPassword(email, password)
-.then(() => {
-alert("Login successful");
-window.location.href = "index.html";
-})
-.catch((error) => {
-alert("Error: " + error.message);
-});
-}
-
 </script>
-
-</body>
-</html>
