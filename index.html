@@ -1,94 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rhockstar Nation - Stable SaaS</title>
+<title>Rhockstar Nation</title>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-
-<!-- Paystack -->
 <script src="https://js.paystack.co/v1/inline.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
-body{background:#0b0b0b;color:#fff;display:flex;min-height:100vh;}
+body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
+.page{display:none;padding:20px}
+.active{display:block}
 
-.sidebar{width:250px;position:fixed;height:100%;background:#111;padding:20px;overflow:auto;}
-.logo img{width:120px;border-radius:10px;margin-bottom:15px;}
-.sidebar button{width:100%;padding:12px;margin-bottom:10px;background:#1b1b1b;color:#fff;border:none;border-radius:10px;cursor:pointer;text-align:left;}
-.sidebar button:hover{background:#00ffcc;color:#000;}
+.nav{background:#111;padding:10px}
+.nav button{margin:5px;padding:10px;cursor:pointer}
 
-.main{margin-left:250px;padding:20px;flex:1;}
+.card{background:#1a1a1a;padding:15px;margin:10px 0;border-radius:10px}
+input,select,textarea{width:100%;padding:10px;margin:5px 0}
 
-.page{display:none;}
-.page.active{display:block;}
-
-.card{background:#161616;padding:15px;border-radius:12px;margin-bottom:15px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;}
-
-input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;background:#222;color:#fff;}
-
-.btn{width:100%;padding:12px;margin-top:10px;background:#00ffcc;border:none;border-radius:10px;font-weight:bold;cursor:pointer;}
-
-.status{padding:5px 10px;border-radius:6px;font-size:12px;}
-.pending{background:orange;color:#000;}
-.progress{background:blue;color:#fff;}
-.completed{background:green;color:#fff;}
-
-.service-card{cursor:pointer;transition:0.2s;}
-.service-card:hover{transform:scale(1.02);background:#1f1f1f;}
+.btn{padding:10px;background:#00ffcc;border:none;cursor:pointer;width:100%}
+.service{cursor:pointer}
+.service:hover{background:#222}
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-<div class="logo">
-<img id="siteLogo" src="https://via.placeholder.com/120">
-</div>
-
-<button onclick="show('dashboard')">Dashboard</button>
+<div class="nav">
+<button onclick="show('home')">Home</button>
 <button onclick="show('services')">Services</button>
 <button onclick="show('orders')">Orders</button>
-<button onclick="show('portfolio')">Portfolio</button>
 <button onclick="show('admin')">Admin</button>
 <button onclick="show('login')">Login</button>
 </div>
 
-<div class="main">
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="page active">
-<div class="grid">
-<div class="card"><h3>Total Orders</h3><h1 id="t">0</h1></div>
-<div class="card"><h3>Pending</h3><h1 id="p">0</h1></div>
-<div class="card"><h3>Completed</h3><h1 id="c">0</h1></div>
-</div>
+<!-- HOME -->
+<div id="home" class="page active">
+<h2>Welcome to Rhockstar Nation</h2>
 </div>
 
 <!-- SERVICES -->
 <div id="services" class="page">
 
-<div class="card service-card" onclick="selectService('Advert Placement')"><h3>Advert Placement</h3></div>
-<div class="card service-card" onclick="selectService('Certificate Editing')"><h3>Certificate Editing</h3></div>
-<div class="card service-card" onclick="selectService('Document Editing')"><h3>Document Editing</h3></div>
-<div class="card service-card" onclick="selectService('Graphics Design')"><h3>Graphics Design</h3></div>
-<div class="card service-card" onclick="selectService('Logo Design')"><h3>Logo Design</h3></div>
-<div class="card service-card" onclick="selectService('Web Design')"><h3>Web Design</h3></div>
-<div class="card service-card" onclick="selectService('Web Development')"><h3>Web Development</h3></div>
+<div class="card service" onclick="selectService('Advert Placement')">Advert Placement</div>
+<div class="card service" onclick="selectService('Certificate Editing')">Certificate Editing</div>
+<div class="card service" onclick="selectService('Document Editing')">Document Editing</div>
+<div class="card service" onclick="selectService('Graphics Design')">Graphics Design</div>
+<div class="card service" onclick="selectService('Logo Design')">Logo Design</div>
+<div class="card service" onclick="selectService('Web Design')">Web Design</div>
+<div class="card service" onclick="selectService('Web Development')">Web Development</div>
 
 </div>
 
 <!-- ORDERS -->
 <div id="orders" class="page">
-<div class="card">
 <h2>Place Order</h2>
 
 <input id="name" placeholder="Name">
@@ -104,153 +70,122 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <option>Web Development</option>
 </select>
 
-<textarea id="desc" placeholder="Project details"></textarea>
+<textarea id="desc" placeholder="Description"></textarea>
 
-<button class="btn" onclick="payWithPaystack()">Pay with Paystack</button>
+<button class="btn" onclick="pay()">Pay with Paystack</button>
 <button class="btn" onclick="submitOrder()">Submit Order</button>
-</div>
 
-<div class="card">
-<h3>Payment Accounts</h3>
-<p>Opay: 8074647269 (Elijah Peter)</p>
-<p>GTBank: 0167798627 (Peter Elijah)</p>
-<p>WhatsApp: 2348074647269</p>
-</div>
-</div>
-
-<!-- PORTFOLIO -->
-<div id="portfolio" class="page">
-<div class="card">
-<h2>Upload Works / Logo</h2>
-<input type="file" id="fileUpload">
-<button class="btn" onclick="uploadWork()">Upload</button>
-</div>
-<div id="portfolioList"></div>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="page">
-<div class="card">
 <h2>Admin Login</h2>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 <button class="btn" onclick="login()">Login</button>
 </div>
-</div>
 
 <!-- ADMIN -->
 <div id="admin" class="page">
-<div class="card">
 <h2>Admin Panel</h2>
 <p id="status">Not logged in</p>
-</div>
 <div id="ordersList"></div>
-</div>
-
 </div>
 
 <script>
 
+// FIREBASE
 const firebaseConfig = {
-apiKey:"AIzaSyApIqqO8AfmyA3N6JofFGxKo6nXXc",
-authDomain:"rhockstar-admin.firebaseapp.com",
-projectId:"rhockstar-admin",
-storageBucket:"rhockstar-admin.appspot.com",
-messagingSenderId:"66440765531",
-appId:"1:66440765531:web:9b0d3fd8b110defac29f7e"
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+projectId:"YOUR_ID"
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
 
+// PAGE SWITCH
 function show(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const el = document.getElementById(id);
-  if(el) el.classList.add('active');
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
+// SERVICE SELECT
 function selectService(service){
-  show('orders');
-  document.getElementById('service').value = service;
+show('orders');
+document.getElementById('service').value = service;
 }
 
-function payWithPaystack(){
-const email = prompt("Enter email for receipt");
-if(!email) return;
-
-let amount = 5000 * 100;
-
+// PAYSTACK (SAFE)
+function pay(){
 let handler = PaystackPop.setup({
 key:'pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0',
-email:email,
-amount:amount,
-currency:'NGN',
+email:prompt("Enter email"),
+amount:5000*100,
+currency:"NGN",
 callback:function(res){
-alert('Payment successful: ' + res.reference);
+alert("Paid: "+res.reference);
 },
-onClose:function(){alert('Payment cancelled');}
+onClose:function(){
+alert("Payment closed");
+}
 });
 handler.openIframe();
 }
 
+// ORDER SUBMIT
 function submitOrder(){
-if(!name.value || !phone.value){alert('Fill all fields');return;}
+if(!name.value||!phone.value){
+alert("Fill all fields");
+return;
+}
 
-db.collection('orders').add({
+db.collection("orders").add({
 name:name.value,
 phone:phone.value,
 service:service.value,
 desc:desc.value,
-status:'Pending',
-createdAt:firebase.firestore.FieldValue.serverTimestamp()
-}).then(()=>{
-alert('Order submitted successfully');
-show('dashboard');
-});
-}
-
-function uploadWork(){
-const file = fileUpload.files[0];
-if(!file){alert('Select file');return;}
-const ref = storage.ref('portfolio/'+file.name);
-ref.put(file).then(()=>alert('Uploaded'));
-}
-
-function loadOrders(){
-db.collection('orders').orderBy('createdAt','desc')
-.onSnapshot(snap=>{
-ordersList.innerHTML='';
-let t=0,p=0,c=0;
-snap.forEach(doc=>{
-let o=doc.data();
-t++;if(o.status==='Pending')p++;if(o.status==='Completed')c++;
-ordersList.innerHTML+=`
-<div class='card'>
-<h3>${o.name}</h3>
-<p>${o.service}</p>
-<span class='status ${o.status.toLowerCase()}'>${o.status}</span>
-</div>`;
+status:"Pending",
+createdAt:new Date()
 });
 
-document.getElementById('t').innerText=t;
-document.getElementById('p').innerText=p;
-document.getElementById('c').innerText=c;
-});
+alert("Order sent");
+show('home');
 }
 
-auth.onAuthStateChanged(user=>{
-if(user){
-document.getElementById('status').innerText='Logged in as '+user.email;
-loadOrders();
-}else{
-document.getElementById('status').innerText='Not logged in';
-}
-});
-
+// LOGIN
 function login(){
 auth.signInWithEmailAndPassword(email.value,password.value)
 .then(()=>show('admin'))
-.catch(e=>alert(e.message)
+.catch(e=>alert(e.message));
+}
+
+// LOAD ORDERS
+function load(){
+db.collection("orders").onSnapshot(snap=>{
+ordersList.innerHTML="";
+snap.forEach(d=>{
+let o=d.data();
+ordersList.innerHTML+=`
+<div class="card">
+<h3>${o.name}</h3>
+<p>${o.service}</p>
+<p>${o.status}</p>
+</div>`;
+});
+});
+}
+
+// AUTH STATE
+auth.onAuthStateChanged(user=>{
+if(user){
+status.innerText="Logged in "+user.email;
+load();
+}
+});
+
+</script>
+
+</body>
+</html>
