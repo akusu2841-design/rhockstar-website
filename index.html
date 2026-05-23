@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rhockstar Nation SaaS</title>
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -12,11 +12,10 @@
 
 body{
 background:linear-gradient(135deg,#0b0b0b,#141414);
-color:white;
+color:#fff;
 min-height:100vh;
 }
 
-/* NAV */
 .nav{
 display:flex;
 gap:10px;
@@ -24,49 +23,30 @@ padding:10px;
 background:#111;
 position:sticky;
 top:0;
-z-index:10;
 }
 
 .nav button{
 padding:10px;
 border:none;
 background:#222;
-color:white;
+color:#fff;
 border-radius:8px;
 cursor:pointer;
 }
 
-.nav button:hover{
-background:#00ffcc;
-color:#000;
-}
+.nav button:hover{background:#00ffcc;color:#000}
 
-/* PAGE */
 .page{display:none;padding:20px}
-.active{display:block;animation:fade .25s ease}
+.active{display:block}
 
-@keyframes fade{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1;transform:translateY(0)}
-}
-
-/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
 padding:15px;
 margin:10px 0;
 border-radius:12px;
-cursor:pointer;
-transition:.2s;
+border:1px solid rgba(255,255,255,0.08);
 }
 
-.card:hover{
-transform:scale(1.02);
-background:rgba(0,255,204,0.08);
-}
-
-/* INPUTS */
 input,select,textarea{
 width:100%;
 padding:12px;
@@ -74,8 +54,7 @@ margin:6px 0;
 border:none;
 border-radius:10px;
 background:#222;
-color:white;
-outline:none;
+color:#fff;
 }
 
 button{
@@ -97,7 +76,6 @@ h2{margin-bottom:10px}
 
 <body>
 
-<!-- NAV -->
 <div class="nav">
 <button onclick="show('home')">Home</button>
 <button onclick="show('services')">Services</button>
@@ -108,7 +86,7 @@ h2{margin-bottom:10px}
 <!-- HOME -->
 <div id="home" class="page active">
 <h2>Rhockstar Nation 🚀</h2>
-<p>Creative SaaS platform for digital services.</p>
+<p>Creative SaaS platform for services</p>
 </div>
 
 <!-- SERVICES -->
@@ -125,12 +103,12 @@ h2{margin-bottom:10px}
 
 </div>
 
-<!-- ORDER -->
+<!-- ORDERS -->
 <div id="orders" class="page">
-<h2>Place Order (Payment Required)</h2>
+<h2>Place Order</h2>
 
-<input id="name" placeholder="Your Name" />
-<input id="phone" placeholder="Phone Number" />
+<input id="name" placeholder="Your Name">
+<input id="phone" placeholder="Phone Number">
 
 <select id="service">
 <option>Advert Placement</option>
@@ -151,7 +129,7 @@ h2{margin-bottom:10px}
 <div id="admin" class="page">
 <h2>Admin Panel</h2>
 
-<input id="adminPass" type="password" placeholder="Admin Password"/>
+<input id="adminPass" type="password" placeholder="Enter Admin Password">
 <button onclick="loginAdmin()">Login</button>
 
 <div id="adminBox" style="display:none;">
@@ -169,63 +147,24 @@ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* SERVICE SELECT */
+/* SERVICE */
 function selectService(service){
 document.getElementById("service").value = service;
 show('orders');
 }
 
-/* ORDERS DB */
+/* STORAGE */
 let orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
-/* SAVE ORDER */
-function saveOrder(reference){
-orders.push({
-name:name.value,
-phone:phone.value,
-service:service.value,
-desc:desc.value,
-status:"Paid",
-ref:reference
-});
-
-localStorage.setItem("orders", JSON.stringify(orders));
-
-alert("Payment successful & order saved 🚀");
-show('admin');
-loadOrders();
-}
-
-/* LOAD ORDERS */
-function loadOrders(){
-ordersList.innerHTML = "";
-
-orders.forEach(o=>{
-ordersList.innerHTML += `
-<div class="card">
-<b>${o.name}</b><br>
-${o.service}<br>
-${o.phone}<br>
-Status: ${o.status}<br>
-Ref: ${o.ref}
-</div>`;
-});
-}
-
-/* ADMIN LOGIN */
-function loginAdmin(){
-if(adminPass.value === "1234"){
-adminBox.style.display = "block";
-loadOrders();
-}else{
-alert("Wrong password");
-}
-}
-
-/* PAYSTACK (FINAL LOCK SYSTEM) */
+/* PAYSTACK */
 function pay(){
 
-if(!name.value || !phone.value || !desc.value){
+const nameVal = document.getElementById("name").value.trim();
+const phoneVal = document.getElementById("phone").value.trim();
+const descVal = document.getElementById("desc").value.trim();
+const serviceVal = document.getElementById("service").value;
+
+if(!nameVal || !phoneVal || !descVal){
 alert("Fill all fields before payment");
 return;
 }
@@ -237,7 +176,7 @@ amount:5000 * 100,
 currency:"NGN",
 
 callback:function(res){
-saveOrder(res.reference);
+saveOrder(nameVal, phoneVal, serviceVal, descVal, res.reference);
 },
 
 onClose:function(){
@@ -246,6 +185,53 @@ alert("Payment cancelled");
 });
 
 handler.openIframe();
+}
+
+/* SAVE ORDER */
+function saveOrder(name, phone, service, desc, ref){
+
+orders.push({
+name, phone, service, desc,
+ref,
+status:"Paid"
+});
+
+localStorage.setItem("orders", JSON.stringify(orders));
+
+alert("Order saved successfully 🚀");
+show('admin');
+loadOrders();
+}
+
+/* LOAD ORDERS */
+function loadOrders(){
+const box = document.getElementById("ordersList");
+box.innerHTML = "";
+
+orders.forEach(o=>{
+box.innerHTML += `
+<div class="card">
+<b>${o.name}</b><br>
+${o.service}<br>
+${o.phone}<br>
+Status: ${o.status}<br>
+Ref: ${o.ref}
+</div>`;
+});
+}
+
+/* FIXED ADMIN LOGIN */
+function loginAdmin(){
+
+const pass = document.getElementById("adminPass").value.trim();
+
+if(pass === "1234"){
+document.getElementById("adminBox").style.display = "block";
+loadOrders();
+alert("Login successful 🚀");
+}else{
+alert("Wrong password");
+}
 }
 
 </script>
