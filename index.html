@@ -1,47 +1,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Test Page</title>
+<title>Rhockstar Nation</title>
 
 <style>
-.page{display:none}
+body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
+
+.page{display:none;padding:20px}
 .active{display:block}
-.card{
-padding:20px;
-margin:10px;
-background:#222;
-color:white;
-cursor:pointer;
-}
+
+.card{background:#222;padding:15px;margin:10px;cursor:pointer}
+input,select,textarea{width:100%;padding:10px;margin:5px 0}
+button{padding:10px;background:#00ffcc;border:none;cursor:pointer;width:100%}
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <div class="card" onclick="show('services')">
 Click Me → Go to Services
 </div>
 
+<!-- HOME -->
 <div id="home" class="page active">
 <h1>HOME PAGE</h1>
 </div>
 
+<!-- SERVICES -->
 <div id="services" class="page">
-<h1>SERVICES PAGE</h1>
+<h1>SERVICES</h1>
 
-<div class="card" onclick="alert('Service clicked working')">
-Click Service
+<div class="card" onclick="selectService('Web Design')">Web Design</div>
+<div class="card" onclick="selectService('Logo Design')">Logo Design</div>
+<div class="card" onclick="selectService('Graphics Design')">Graphics Design</div>
+
 </div>
 
+<!-- ORDERS -->
+<div id="orders" class="page">
+<h1>ORDER</h1>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+
+<select id="service">
+<option>Web Design</option>
+<option>Logo Design</option>
+<option>Graphics Design</option>
+</select>
+
+<textarea id="desc" placeholder="Description"></textarea>
+
+<button onclick="submitOrder()">Submit Order</button>
+
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="page">
+<h1>ADMIN</h1>
+<div id="ordersList"></div>
 </div>
 
 <script>
+
 function show(id){
 document.querySelectorAll('.page').forEach(p=>{
 p.classList.remove('active');
 });
 document.getElementById(id).classList.add('active');
 }
+
+function selectService(service){
+document.getElementById('service').value = service;
+show('orders');
+}
+
+let orders = [];
+
+function submitOrder(){
+if(!name.value || !phone.value){
+alert("Fill all fields");
+return;
+}
+
+orders.push({
+name:name.value,
+phone:phone.value,
+service:service.value,
+desc:desc.value
+});
+
+alert("Order submitted");
+show('admin');
+loadOrders();
+}
+
+function loadOrders(){
+ordersList.innerHTML = "";
+
+orders.forEach(o=>{
+ordersList.innerHTML += `
+<div class="card">
+<p>${o.name}</p>
+<p>${o.service}</p>
+<p>${o.phone}</p>
+</div>`;
+});
+}
+
 </script>
 
 </body>
