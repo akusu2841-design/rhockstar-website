@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rhockstar Nation - SaaS Platform</title>
+<title>Rhockstar Nation - Stable SaaS</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -19,21 +19,29 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
 body{background:#0b0b0b;color:#fff;display:flex;min-height:100vh;}
+
 .sidebar{width:250px;position:fixed;height:100%;background:#111;padding:20px;overflow:auto;}
 .logo img{width:120px;border-radius:10px;margin-bottom:15px;}
 .sidebar button{width:100%;padding:12px;margin-bottom:10px;background:#1b1b1b;color:#fff;border:none;border-radius:10px;cursor:pointer;text-align:left;}
 .sidebar button:hover{background:#00ffcc;color:#000;}
+
 .main{margin-left:250px;padding:20px;flex:1;}
+
 .page{display:none;}
-.active{display:block;}
+.page.active{display:block;}
+
 .card{background:#161616;padding:15px;border-radius:12px;margin-bottom:15px;}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;}
+
 input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;background:#222;color:#fff;}
+
 .btn{width:100%;padding:12px;margin-top:10px;background:#00ffcc;border:none;border-radius:10px;font-weight:bold;cursor:pointer;}
+
 .status{padding:5px 10px;border-radius:6px;font-size:12px;}
 .pending{background:orange;color:#000;}
-.progress{background:blue;}
-.completed{background:green;}
+.progress{background:blue;color:#fff;}
+.completed{background:green;color:#fff;}
+
 .service-card{cursor:pointer;transition:0.2s;}
 .service-card:hover{transform:scale(1.02);background:#1f1f1f;}
 </style>
@@ -45,6 +53,7 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <div class="logo">
 <img id="siteLogo" src="https://via.placeholder.com/120">
 </div>
+
 <button onclick="show('dashboard')">Dashboard</button>
 <button onclick="show('services')">Services</button>
 <button onclick="show('orders')">Orders</button>
@@ -81,6 +90,7 @@ input,select,textarea{width:100%;padding:10px;margin-top:10px;border:none;border
 <div id="orders" class="page">
 <div class="card">
 <h2>Place Order</h2>
+
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
 
@@ -157,17 +167,20 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 function show(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(el) el.classList.add('active');
 }
 
 function selectService(service){
-show('orders');
-document.getElementById('service').value = service;
+  show('orders');
+  document.getElementById('service').value = service;
 }
 
 function payWithPaystack(){
-const email = prompt("Enter email");
+const email = prompt("Enter email for receipt");
+if(!email) return;
+
 let amount = 5000 * 100;
 
 let handler = PaystackPop.setup({
@@ -176,15 +189,15 @@ email:email,
 amount:amount,
 currency:'NGN',
 callback:function(res){
-alert('Payment successful '+res.reference);
+alert('Payment successful: ' + res.reference);
 },
-onClose:function(){alert('Payment closed');}
+onClose:function(){alert('Payment cancelled');}
 });
 handler.openIframe();
 }
 
 function submitOrder(){
-if(!name.value||!phone.value){alert('Fill all fields');return;}
+if(!name.value || !phone.value){alert('Fill all fields');return;}
 
 db.collection('orders').add({
 name:name.value,
@@ -192,16 +205,17 @@ phone:phone.value,
 service:service.value,
 desc:desc.value,
 status:'Pending',
-createdAt:new Date()
-});
-
-alert('Order submitted');
+createdAt:firebase.firestore.FieldValue.serverTimestamp()
+}).then(()=>{
+alert('Order submitted successfully');
 show('dashboard');
+});
 }
 
 function uploadWork(){
-const file=fileUpload.files[0];
-const ref=storage.ref('portfolio/'+file.name);
+const file = fileUpload.files[0];
+if(!file){alert('Select file');return;}
+const ref = storage.ref('portfolio/'+file.name);
 ref.put(file).then(()=>alert('Uploaded'));
 }
 
@@ -220,6 +234,7 @@ ordersList.innerHTML+=`
 <span class='status ${o.status.toLowerCase()}'>${o.status}</span>
 </div>`;
 });
+
 document.getElementById('t').innerText=t;
 document.getElementById('p').innerText=p;
 document.getElementById('c').innerText=c;
@@ -228,13 +243,14 @@ document.getElementById('c').innerText=c;
 
 auth.onAuthStateChanged(user=>{
 if(user){
-status.innerText='Logged in '+user.email;
+document.getElementById('status').innerText='Logged in as '+user.email;
 loadOrders();
 }else{
-status.innerText='Not logged in';
+document.getElementById('status').innerText='Not logged in';
 }
 });
 
 function login(){
 auth.signInWithEmailAndPassword(email.value,password.value)
-.t
+.then(()=>show('admin'))
+.catch(e=>alert(e.message)
