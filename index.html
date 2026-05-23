@@ -1,84 +1,214 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Rhockstar Nation</title>
+<title>Rhockstar Nation SaaS</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0b0b0b,#1a1a1a);
+color:white;
+}
 
-.page{display:none;padding:20px}
-.active{display:block}
+/* NAV */
+.nav{
+display:flex;
+gap:10px;
+padding:10px;
+background:#111;
+position:sticky;
+top:0;
+}
 
-.card{background:#222;padding:15px;margin:10px;cursor:pointer}
-input,select,textarea{width:100%;padding:10px;margin:5px 0}
-button{padding:10px;background:#00ffcc;border:none;cursor:pointer;width:100%}
+.nav button{
+padding:10px;
+border:none;
+background:#222;
+color:white;
+cursor:pointer;
+border-radius:8px;
+}
+
+.nav button:hover{
+background:#00ffcc;
+color:black;
+}
+
+/* PAGES */
+.page{display:none;padding:20px;}
+.active{display:block;animation:fade .3s ease;}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+/* CARDS */
+.card{
+background:rgba(255,255,255,0.05);
+padding:15px;
+margin:10px 0;
+border-radius:12px;
+border:1px solid rgba(255,255,255,0.1);
+cursor:pointer;
+transition:0.2s;
+}
+
+.card:hover{
+transform:scale(1.02);
+background:rgba(0,255,204,0.08);
+}
+
+/* INPUTS */
+input,select,textarea{
+width:100%;
+padding:12px;
+margin:6px 0;
+border:none;
+border-radius:10px;
+background:#222;
+color:white;
+outline:none;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#00ffcc;
+font-weight:bold;
+}
+
+button:hover{
+background:#00ddb3;
+}
+
+/* TITLE */
+h2{margin-top:0}
+
+.service-title{
+font-size:18px;
+font-weight:bold;
+}
 </style>
 </head>
 
 <body>
 
 <!-- NAV -->
-<div class="card" onclick="show('services')">
-Click Me → Go to Services
+<div class="nav">
+<button onclick="show('home')">Home</button>
+<button onclick="show('services')">Services</button>
+<button onclick="show('orders')">Orders</button>
+<button onclick="show('admin')">Admin</button>
 </div>
 
 <!-- HOME -->
 <div id="home" class="page active">
-<h1>HOME PAGE</h1>
+<h2>Welcome to Rhockstar Nation 🚀</h2>
+<p>Your all-in-one creative service platform.</p>
 </div>
 
 <!-- SERVICES -->
 <div id="services" class="page">
-<h1>SERVICES</h1>
+<h2>Services</h2>
 
-<div class="card" onclick="selectService('Web Design')">Web Design</div>
-<div class="card" onclick="selectService('Logo Design')">Logo Design</div>
-<div class="card" onclick="selectService('Graphics Design')">Graphics Design</div>
+<div class="card" onclick="selectService('Advert Placement')">
+<div class="service-title">📢 Advert Placement</div>
+</div>
+
+<div class="card" onclick="selectService('Certificate Editing')">
+<div class="service-title">📜 Certificate Editing</div>
+</div>
+
+<div class="card" onclick="selectService('Document Editing')">
+<div class="service-title">📄 Document Editing</div>
+</div>
+
+<div class="card" onclick="selectService('Graphics Design')">
+<div class="service-title">🎨 Graphics Design</div>
+</div>
+
+<div class="card" onclick="selectService('Logo Design')">
+<div class="service-title">🧠 Logo Design</div>
+</div>
+
+<div class="card" onclick="selectService('Web Design')">
+<div class="service-title">🌐 Web Design</div>
+</div>
+
+<div class="card" onclick="selectService('Web Development')">
+<div class="service-title">💻 Web Development</div>
+</div>
 
 </div>
 
 <!-- ORDERS -->
 <div id="orders" class="page">
-<h1>ORDER</h1>
+<h2>Place Order</h2>
 
-<input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone">
+<input id="name" placeholder="Your Name">
+<input id="phone" placeholder="Phone Number">
 
 <select id="service">
-<option>Web Design</option>
-<option>Logo Design</option>
+<option>Advert Placement</option>
+<option>Certificate Editing</option>
+<option>Document Editing</option>
 <option>Graphics Design</option>
+<option>Logo Design</option>
+<option>Web Design</option>
+<option>Web Development</option>
 </select>
 
-<textarea id="desc" placeholder="Description"></textarea>
+<textarea id="desc" placeholder="Describe your project"></textarea>
 
-<button onclick="submitOrder()">Submit Order</button>
+<button onclick="pay()">Pay with Paystack</button>
+<button onclick="submitOrder()">Submit Order (Without Payment)</button>
 
 </div>
 
 <!-- ADMIN -->
 <div id="admin" class="page">
-<h1>ADMIN</h1>
+<h2>Admin Panel</h2>
+
+<input id="adminPass" type="password" placeholder="Enter Admin Password">
+<button onclick="loginAdmin()">Login</button>
+
+<div id="adminBox" style="display:none;">
+<h3>All Orders</h3>
 <div id="ordersList"></div>
+</div>
+
 </div>
 
 <script>
 
+/* PAGE SWITCH */
 function show(id){
-document.querySelectorAll('.page').forEach(p=>{
-p.classList.remove('active');
-});
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
+/* SELECT SERVICE */
 function selectService(service){
 document.getElementById('service').value = service;
 show('orders');
 }
 
-let orders = [];
+/* ORDERS STORAGE */
+let orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
+/* SUBMIT ORDER */
 function submitOrder(){
+
 if(!name.value || !phone.value){
 alert("Fill all fields");
 return;
@@ -88,25 +218,59 @@ orders.push({
 name:name.value,
 phone:phone.value,
 service:service.value,
-desc:desc.value
+desc:desc.value,
+status:"Pending"
 });
 
-alert("Order submitted");
+localStorage.setItem("orders", JSON.stringify(orders));
+
+alert("Order saved");
 show('admin');
 loadOrders();
 }
 
+/* LOAD ORDERS */
 function loadOrders(){
-ordersList.innerHTML = "";
+ordersList.innerHTML="";
 
-orders.forEach(o=>{
+orders.forEach((o,i)=>{
 ordersList.innerHTML += `
 <div class="card">
-<p>${o.name}</p>
+<p><b>${o.name}</b></p>
 <p>${o.service}</p>
 <p>${o.phone}</p>
-</div>`;
+<p>Status: ${o.status}</p>
+</div>
+`;
 });
+}
+
+/* ADMIN LOGIN (SIMPLE SAFE VERSION) */
+function loginAdmin(){
+if(adminPass.value === "1234"){
+document.getElementById("adminBox").style.display="block";
+loadOrders();
+}else{
+alert("Wrong password");
+}
+}
+
+/* PAYSTACK */
+function pay(){
+let handler = PaystackPop.setup({
+key:'pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0',
+email:prompt("Enter email"),
+amount:5000*100,
+currency:"NGN",
+callback:function(res){
+alert("Payment successful: " + res.reference);
+submitOrder();
+},
+onClose:function(){
+alert("Payment closed");
+}
+});
+handler.openIframe();
 }
 
 </script>
