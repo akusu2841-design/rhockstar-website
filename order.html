@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Place Order - Rhockstar Nation</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+body{
+font-family:Arial;
+background:#0a0a0a;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+input, select, textarea{
+width:300px;
+padding:10px;
+margin:10px;
+border-radius:5px;
+border:none;
+}
+
+button{
+padding:10px 20px;
+background:#00ffcc;
+border:none;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Place Your Order 🚀</h1>
+
+<p>Fill the form below to send your request</p>
+
+<form id="orderForm">
+
+<input id="name" placeholder="Your Name" required><br>
+<input id="phone" placeholder="Phone Number" required><br>
+
+<select id="service">
+<option value="Graphic Design - 15000">Graphic Design</option>
+<option value="Video Editing - 30000">Video Editing</option>
+<option value="Document Design - 20000">Document Design</option>
+</select><br>
+
+<textarea id="desc" placeholder="Describe your order"></textarea><br>
+
+<button type="submit">Submit Order</button>
+
+</form>
+
+<script>
+
+// FIREBASE CONFIG
+const firebaseConfig = {
+apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
+authDomain: "rhockstar-admin.firebaseapp.com",
+projectId: "rhockstar-admin",
+storageBucket: "rhockstar-admin.firebasestorage.app",
+messagingSenderId: "66440765531",
+appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// SUBMIT ORDER
+document.getElementById("orderForm").addEventListener("submit", function(e){
+e.preventDefault();
+
+db.collection("orders").add({
+name: document.getElementById("name").value,
+phone: document.getElementById("phone").value,
+service: document.getElementById("service").value,
+description: document.getElementById("desc").value,
+time: new Date()
+})
+.then(() => {
+alert("Order submitted successfully 🚀");
+document.getElementById("orderForm").reset();
+})
+.catch(err => {
+alert(err.message);
+});
+
+});
+
+</script>
+
+</body>
+</html>
