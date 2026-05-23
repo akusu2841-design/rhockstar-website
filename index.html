@@ -18,56 +18,68 @@
 
     .nav {
       background: #111;
-      padding: 10px;
+      padding: 15px;
+      display: flex;
+      gap: 10px;
     }
 
     .nav button {
+      background: #222;
       color: white;
-      background: #333;
       border: none;
       padding: 10px 15px;
-      margin-right: 5px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
     .nav button:hover {
-      background: #555;
+      background: #00ffcc;
+      color: black;
     }
 
     .page {
       display: none;
-      padding: 20px;
+      padding: 30px;
     }
 
     #home {
       display: block;
     }
 
-    input, select, textarea, button {
-      padding: 10px;
-      margin: 5px 0;
-      width: 300px;
-      display: block;
-    }
-
-    .box {
+    .card {
       background: #1a1a1a;
       padding: 20px;
-      width: 320px;
-      border-radius: 10px;
+      border-radius: 12px;
+      max-width: 400px;
     }
 
-    button.submit {
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    .submit {
       background: #00ffcc;
       border: none;
+      padding: 12px;
+      margin-top: 10px;
+      width: 100%;
       cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .submit:hover {
+      background: #00c9a7;
     }
   </style>
 </head>
 
 <body>
 
-<!-- NAV -->
+<!-- NAVIGATION -->
 <div class="nav">
   <button onclick="showPage('home')">Home</button>
   <button onclick="showPage('orders')">Orders</button>
@@ -84,7 +96,7 @@
 <div id="orders" class="page">
   <h2>Place Order</h2>
 
-  <div class="box">
+  <div class="card">
     <form id="orderForm">
       <input id="name" placeholder="Name" required>
       <input id="phone" placeholder="Phone" required>
@@ -105,23 +117,22 @@
 <!-- ADMIN -->
 <div id="admin" class="page">
   <h2>Admin Panel</h2>
-  <p>Only logged-in users can manage orders.</p>
+  <p>Welcome Admin 🚀</p>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="page">
   <h2>Login</h2>
 
-  <div class="box">
+  <div class="card">
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
     <button class="submit" onclick="login()">Login</button>
   </div>
 </div>
 
-<!-- SCRIPT -->
 <script>
-  // Firebase config
+  // FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
     authDomain: "rhockstar-admin.firebaseapp.com",
@@ -132,10 +143,11 @@
   };
 
   firebase.initializeApp(firebaseConfig);
+
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // PAGE SWITCHER
+  // PAGE SWITCH
   function showPage(pageId) {
     let pages = document.querySelectorAll(".page");
     pages.forEach(p => p.style.display = "none");
@@ -143,20 +155,29 @@
   }
 
   // LOGIN
-  function login(){
+  function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      alert("Login successful 🚀");
-      showPage("admin");
-    })
-    .catch(err => alert(err.message));
+      .then(() => {
+        alert("Login successful 🚀");
+        showPage("admin");
+      })
+      .catch(err => alert(err.message));
   }
 
+  // AUTO CHECK LOGIN
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      showPage("admin");
+    } else {
+      showPage("home");
+    }
+  });
+
   // ORDER SUBMIT
-  document.getElementById("orderForm").addEventListener("submit", function(e){
+  document.getElementById("orderForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
     db.collection("orders").add({
