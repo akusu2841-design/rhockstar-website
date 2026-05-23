@@ -3,13 +3,19 @@
 <head>
   <title>Rhockstar Nation</title>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       font-family: Arial;
       margin: 0;
+      background: #0a0a0a;
+      color: white;
     }
 
-    /* Navigation bar */
     .nav {
       background: #111;
       padding: 10px;
@@ -28,330 +34,143 @@
       background: #555;
     }
 
-    /* Pages */
     .page {
       display: none;
       padding: 20px;
     }
 
-    /* Home shows first */
     #home {
       display: block;
+    }
+
+    input, select, textarea, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 300px;
+      display: block;
+    }
+
+    .box {
+      background: #1a1a1a;
+      padding: 20px;
+      width: 320px;
+      border-radius: 10px;
+    }
+
+    button.submit {
+      background: #00ffcc;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 
-<!-- NAVIGATION -->
+<!-- NAV -->
 <div class="nav">
   <button onclick="showPage('home')">Home</button>
   <button onclick="showPage('orders')">Orders</button>
   <button onclick="showPage('admin')">Admin</button>
+  <button onclick="showPage('login')">Login</button>
 </div>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 <div id="home" class="page">
-  <h1>Welcome to Rhockstar Nation</h1>
-  <p>Your entertainment and business hub.</p>
+  <h1>Welcome to Rhockstar Nation 🚀</h1>
 </div>
 
-<!-- ORDERS PAGE -->
+<!-- ORDERS -->
 <div id="orders" class="page">
-  <h1>Orders</h1>
-  <p>No orders yet (we will connect Firebase here later).</p>
-</div>
+  <h2>Place Order</h2>
 
-<!-- ADMIN PAGE -->
-<div id="admin" class="page">
-  <h1>Admin Panel</h1>
-  <p>Manage your system here.</p>
-</div>
-
-<!-- JAVASCRIPT (page switcher) -->
-<script>
-function showPage(pageId) {
-  let pages = document.querySelectorAll(".page");
-
-  pages.forEach(page => {
-    page.style.display = "none";
-  });
-
-  document.getElementById(pageId).style.display = "block";
-}
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-<title>Rhockstar Login</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-<style>
-body {
-    background:#0a0a0a;
-    color:white;
-    font-family:Arial;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.box {
-    background:#1a1a1a;
-    padding:25px;
-    border-radius:10px;
-    width:300px;
-}
-
-input {
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-}
-
-button {
-    width:100%;
-    padding:10px;
-    background:#00ffcc;
-    border:none;
-    cursor:pointer;
-}
-</style>
-</head>
-
-<body>
-
-<div class="box">
-<h2>Admin Login</h2>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
-</div>
-
-<script>
-
-// 🔥 YOUR FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
-  authDomain: "rhockstar-admin.firebaseapp.com",
-  projectId: "rhockstar-admin",
-  storageBucket: "rhockstar-admin.firebasestorage.app",
-  messagingSenderId: "66440765531",
-  appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-function login(){
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        alert("Login successful 🚀");
-        window.location.href = "admin.html";
-    })
-    .catch((error) => {
-        alert("Login failed: " + error.message);
-    });
-}
-
-</script>
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Place Order - Rhockstar Nation</title>
-
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-    <style>
-        body {
-            font-family: Arial;
-            background: #0a0a0a;
-            color: white;
-            text-align: center;
-            padding: 40px;
-        }
-
-        input, select, textarea {
-            width: 300px;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        button {
-            padding: 10px 20px;
-            background: #00ffcc;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body>
-
-    <h1>Place Your Order 🚀</h1>
-    <p>Fill the form below to send your request</p>
-
+  <div class="box">
     <form id="orderForm">
+      <input id="name" placeholder="Name" required>
+      <input id="phone" placeholder="Phone" required>
 
-        <input id="name" placeholder="Your Name" required><br>
-        <input id="phone" placeholder="Phone Number" required><br>
+      <select id="service">
+        <option value="Graphic Design|15000">Graphic Design - ₦15,000</option>
+        <option value="Video Editing|60000">Video Editing - ₦60,000</option>
+        <option value="Document Design|30000">Document Design - ₦30,000</option>
+      </select>
 
-        <select id="service">
-            <option value="Graphic Design|15000">Graphic Design - ₦15,000</option>
-            <option value="Video Editing|60000">Video Editing - ₦60,000</option>
-            <option value="Document Design|30000">Document Design - ₦30,000</option>
-            <option value="Certificate Design|40000">Certificate Design - ₦40,000</option>
-        </select>
+      <textarea id="desc" placeholder="Description"></textarea>
 
-        <br>
-
-        <textarea id="desc" placeholder="Describe your order"></textarea><br>
-
-        <button type="submit">Submit Order</button>
-
+      <button class="submit" type="submit">Submit Order</button>
     </form>
-
-    <script>
-
-        // FIREBASE CONFIG
-        const firebaseConfig = {
-            apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
-            authDomain: "rhockstar-admin.firebaseapp.com",
-            projectId: "rhockstar-admin",
-            storageBucket: "rhockstar-admin.firebasestorage.app",
-            messagingSenderId: "66440765531",
-            appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // SUBMIT ORDER
-        document.getElementById("orderForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            db.collection("orders").add({
-                name: document.getElementById("name").value,
-                phone: document.getElementById("phone").value,
-                service: document.getElementById("service").value,
-                description: document.getElementById("desc").value,
-                time: new Date()
-            })
-            .then(() => {
-                alert("Order submitted successfully 🚀");
-                document.getElementById("orderForm").reset();
-            })
-            .catch(err => {
-                alert(err.message);
-            });
-
-        });
-
-    </script>
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html>
-<head>
-<title>Rhockstar Login</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-<style>
-body {
-    background:#0a0a0a;
-    color:white;
-    font-family:Arial;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.box {
-    background:#1a1a1a;
-    padding:25px;
-    border-radius:10px;
-    width:300px;
-}
-
-input {
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-}
-
-button {
-    width:100%;
-    padding:10px;
-    background:#00ffcc;
-    border:none;
-    cursor:pointer;
-}
-</style>
-</head>
-
-<body>
-
-<div class="box">
-<h2>Admin Login</h2>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="login()">Login</button>
+  </div>
 </div>
 
+<!-- ADMIN -->
+<div id="admin" class="page">
+  <h2>Admin Panel</h2>
+  <p>Only logged-in users can manage orders.</p>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="page">
+  <h2>Login</h2>
+
+  <div class="box">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button class="submit" onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- SCRIPT -->
 <script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
+    authDomain: "rhockstar-admin.firebaseapp.com",
+    projectId: "rhockstar-admin",
+    storageBucket: "rhockstar-admin.firebasestorage.app",
+    messagingSenderId: "66440765531",
+    appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
+  };
 
-// 🔥 YOUR FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyApIqqO8AfmyA3N6JofFGxEjfcxKo6nXXc",
-  authDomain: "rhockstar-admin.firebaseapp.com",
-  projectId: "rhockstar-admin",
-  storageBucket: "rhockstar-admin.firebasestorage.app",
-  messagingSenderId: "66440765531",
-  appId: "1:66440765531:web:9b0d3fd8b110defac29f7e"
-};
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+  // PAGE SWITCHER
+  function showPage(pageId) {
+    let pages = document.querySelectorAll(".page");
+    pages.forEach(p => p.style.display = "none");
+    document.getElementById(pageId).style.display = "block";
+  }
 
-function login(){
+  // LOGIN
+  function login(){
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-        alert("Login successful 🚀");
-        window.location.href = "admin.html";
+    .then(() => {
+      alert("Login successful 🚀");
+      showPage("admin");
     })
-    .catch((error) => {
-        alert("Login failed: " + error.message);
-    });
-}
+    .catch(err => alert(err.message));
+  }
 
+  // ORDER SUBMIT
+  document.getElementById("orderForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    db.collection("orders").add({
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      service: document.getElementById("service").value,
+      description: document.getElementById("desc").value,
+      time: new Date()
+    })
+    .then(() => {
+      alert("Order submitted 🚀");
+      document.getElementById("orderForm").reset();
+    });
+  });
 </script>
 
 </body>
