@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rhockstar Nation</title>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -51,13 +51,14 @@ color:#00ffcc;
 width:100%;
 padding:12px;
 margin-bottom:10px;
-background:#1b1b1b;
+background:#1a1a1a;
 border:none;
 color:white;
 border-radius:10px;
 cursor:pointer;
-text-align:left;
 transition:0.3s;
+text-align:left;
+font-size:15px;
 }
 
 .sidebar button:hover{
@@ -85,8 +86,14 @@ display:block;
 }
 
 @keyframes fade{
-from{opacity:0;transform:translateY(10px);}
-to{opacity:1;transform:translateY(0);}
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 /* CARDS */
@@ -107,7 +114,9 @@ gap:20px;
 
 /* INPUTS */
 
-input,select,textarea{
+input,
+select,
+textarea{
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -115,6 +124,12 @@ border:none;
 border-radius:10px;
 background:#222;
 color:white;
+font-size:15px;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
 }
 
 /* BUTTON */
@@ -126,8 +141,11 @@ margin-top:10px;
 border:none;
 border-radius:10px;
 background:#00ffcc;
-cursor:pointer;
+color:black;
 font-weight:bold;
+cursor:pointer;
+font-size:15px;
+transition:0.3s;
 }
 
 .btn:hover{
@@ -137,10 +155,11 @@ background:#00c9a7;
 /* STATUS */
 
 .status{
-padding:5px 10px;
+padding:6px 12px;
 border-radius:6px;
 font-size:12px;
 display:inline-block;
+margin-top:10px;
 }
 
 .pending{
@@ -172,6 +191,7 @@ height:auto;
 
 .main{
 margin-left:0;
+padding:15px;
 }
 
 }
@@ -185,13 +205,29 @@ margin-left:0;
 
 <div class="sidebar">
 
-<div class="logo">Rhockstar Nation 🚀</div>
+<div class="logo">
+Rhockstar Nation 🚀
+</div>
 
-<button onclick="showPage('dashboard')">Dashboard</button>
-<button onclick="showPage('services')">Services</button>
-<button onclick="showPage('orders')">Place Order</button>
-<button onclick="showPage('admin')">Admin</button>
-<button onclick="showPage('login')">Login</button>
+<button onclick="showPage('dashboard')">
+Dashboard
+</button>
+
+<button onclick="showPage('services')">
+Services
+</button>
+
+<button onclick="showPage('orders')">
+Place Order
+</button>
+
+<button onclick="showPage('admin')">
+Admin
+</button>
+
+<button onclick="showPage('login')">
+Login
+</button>
 
 </div>
 
@@ -224,7 +260,11 @@ margin-left:0;
 
 <div class="card">
 <h2>Welcome to Rhockstar Nation</h2>
-<p>Professional digital services platform.</p>
+
+<p>
+Professional digital services platform.
+</p>
+
 </div>
 
 </div>
@@ -238,13 +278,16 @@ margin-left:0;
 <!-- ADVERT -->
 
 <div class="card">
+
 <h3>Advert Placement</h3>
 
 <p>24 HOURS — ₦5,000</p>
 <p>3 DAYS — ₦15,000</p>
 <p>1 WEEK — ₦30,000</p>
+<p>1 MONTH — ₦100,000</p>
 
-<button class="btn" onclick="selectService('Advert Placement')">
+<button class="btn"
+onclick="selectService('Advert Placement')">
 Order Service
 </button>
 
@@ -258,9 +301,12 @@ WhatsApp
 <!-- CERTIFICATE -->
 
 <div class="card">
+
 <h3>Certificate Editing — ₦40,000</h3>
 
-<p>Professional certificate modification and redesign.</p>
+<p>
+Professional certificate editing and redesign.
+</p>
 
 <button class="btn"
 onclick="selectService('Certificate Editing')">
@@ -272,6 +318,7 @@ Order Service
 <!-- DOCUMENT -->
 
 <div class="card">
+
 <h3>Document Editing — ₦30,000</h3>
 
 <button class="btn"
@@ -284,9 +331,10 @@ Order Service
 <!-- GRAPHICS -->
 
 <div class="card">
+
 <h3>Graphics Design — ₦15,000</h3>
 
-<p>Flyers, posters, banners.</p>
+<p>Flyers, posters, social media designs.</p>
 
 <button class="btn"
 onclick="selectService('Graphics Design')">
@@ -298,6 +346,7 @@ Order Service
 <!-- LOGO -->
 
 <div class="card">
+
 <h3>Logo Design — ₦10,000</h3>
 
 <button class="btn"
@@ -310,9 +359,10 @@ Order Service
 <!-- WEB -->
 
 <div class="card">
-<h3>Web Design — ₦120k+</h3>
 
-<p>Premium websites and dashboards.</p>
+<h3>Web Design — ₦120,000+</h3>
+
+<p>Modern premium websites and dashboards.</p>
 
 <button class="btn"
 onclick="selectService('Web Design')">
@@ -333,37 +383,81 @@ Order Service
 
 <h2>Place Order</h2>
 
-<input id="customerName" placeholder="Your Name">
+<input
+id="customerName"
+placeholder="Your Name">
 
-<input id="customerPhone" placeholder="Phone Number">
+<input
+id="customerPhone"
+placeholder="Phone Number">
 
 <select id="serviceSelect">
 
-<option value="">Select Service</option>
+<option value="">
+Select Service
+</option>
 
-<option>Advert Placement</option>
-<option>Certificate Editing</option>
-<option>Document Editing</option>
-<option>Graphics Design</option>
-<option>Logo Design</option>
-<option>Web Design</option>
+<option>
+Advert Placement
+</option>
+
+<option>
+Certificate Editing
+</option>
+
+<option>
+Document Editing
+</option>
+
+<option>
+Graphics Design
+</option>
+
+<option>
+Logo Design
+</option>
+
+<option>
+Web Design
+</option>
 
 </select>
 
 <select id="paymentType">
 
-<option>Pay Half</option>
-<option>Pay Full</option>
+<option>
+Pay Half
+</option>
+
+<option>
+Pay Full
+</option>
 
 </select>
 
-<textarea id="customerDesc"
-placeholder="Describe your project"></textarea>
+<textarea
+id="customerDesc"
+placeholder="Describe your project">
+</textarea>
 
 <button class="btn"
 onclick="submitOrder()">
 Submit Order
 </button>
+
+</div>
+
+<!-- PAYMENT DETAILS -->
+
+<div class="card">
+
+<h3>Payment Details</h3>
+
+<p><strong>Bank:</strong> OPAY</p>
+
+<p><strong>Account Number:</strong> 0000000000</p>
+
+<p><strong>Account Name:</strong> Rhockstar Nation</p>
 
 </div>
 
@@ -377,10 +471,12 @@ Submit Order
 
 <h2>Admin Login</h2>
 
-<input id="email"
+<input
+id="email"
 placeholder="Admin Email">
 
-<input id="password"
+<input
+id="password"
 type="password"
 placeholder="Password">
 
@@ -438,7 +534,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* NAVIGATION */
+/* PAGE NAVIGATION */
 
 function showPage(page){
 
@@ -513,8 +609,31 @@ return;
 
 }
 
+/* PRICE */
+
+let amount = 0;
+
+if(service==="Advert Placement") amount = 5000;
+if(service==="Certificate Editing") amount = 40000;
+if(service==="Document Editing") amount = 30000;
+if(service==="Graphics Design") amount = 15000;
+if(service==="Logo Design") amount = 10000;
+if(service==="Web Design") amount = 120000;
+
+/* HALF/FULL */
+
+let payable = amount;
+
+if(payment==="Pay Half"){
+payable = amount / 2;
+}
+
+/* ORDER ID */
+
 const orderId =
 "RN" + Math.floor(Math.random()*999999);
+
+/* SAVE */
 
 db.collection("orders").add({
 
@@ -523,6 +642,8 @@ name,
 phone,
 service,
 payment,
+amount,
+payable,
 desc,
 
 status:"Pending",
@@ -533,13 +654,31 @@ createdAt:new Date()
 
 .then(()=>{
 
-alert("Order submitted successfully 🚀");
+alert(
+"Order Submitted Successfully 🚀\n\n" +
+
+"Order ID: " + orderId +
+
+"\n\nAmount To Pay: ₦" + payable +
+
+"\n\nBank: OPAY" +
+
+"\nAccount Number: 0000000000" +
+
+"\nAccount Name: Rhockstar Nation"
+);
 
 document.getElementById('customerName').value="";
 document.getElementById('customerPhone').value="";
 document.getElementById('customerDesc').value="";
 
 showPage('dashboard');
+
+})
+
+.catch(error=>{
+
+alert(error.message);
 
 });
 
@@ -558,7 +697,7 @@ let total = 0;
 let pending = 0;
 let completed = 0;
 
-ordersContainer.innerHTML = "";
+document.getElementById('ordersContainer').innerHTML = "";
 
 snapshot.forEach(doc=>{
 
@@ -566,26 +705,56 @@ const o = doc.data();
 
 total++;
 
-if(o.status==="Pending") pending++;
-if(o.status==="Completed") completed++;
+if(o.status==="Pending"){
+pending++;
+}
 
-ordersContainer.innerHTML += `
+if(o.status==="Completed"){
+completed++;
+}
+
+document.getElementById('ordersContainer').innerHTML += `
 
 <div class="card">
 
 <h3>${o.name}</h3>
 
-<p><strong>Order ID:</strong> ${o.orderId}</p>
+<p>
+<strong>Order ID:</strong>
+${o.orderId}
+</p>
 
-<p><strong>Service:</strong> ${o.service}</p>
+<p>
+<strong>Phone:</strong>
+${o.phone}
+</p>
 
-<p><strong>Payment:</strong> ${o.payment}</p>
+<p>
+<strong>Service:</strong>
+${o.service}
+</p>
 
-<p>${o.desc}</p>
+<p>
+<strong>Payment:</strong>
+${o.payment}
+</p>
 
-<br>
+<p>
+<strong>Amount:</strong>
+₦${o.payable}
+</p>
 
-<span class="status ${o.status.toLowerCase()}">
+<p>
+${o.desc}
+</p>
+
+<span class="status ${
+o.status==="Pending"
+? "pending"
+: o.status==="Completed"
+? "completed"
+: "progress"
+}">
 ${o.status}
 </span>
 
@@ -606,7 +775,9 @@ Complete
 });
 
 document.getElementById('totalOrders').innerText = total;
+
 document.getElementById('pendingOrders').innerText = pending;
+
 document.getElementById('completedOrders').innerText = completed;
 
 });
@@ -619,7 +790,11 @@ function updateStatus(id,status){
 
 db.collection("orders")
 .doc(id)
-.update({status});
+.update({
+
+status:status
+
+});
 
 }
 
@@ -630,7 +805,8 @@ auth.onAuthStateChanged(user=>{
 if(user){
 
 document.getElementById('adminStatus')
-.innerText = "Logged in as " + user.email;
+.innerText =
+"Logged in as " + user.email;
 
 loadOrders();
 
