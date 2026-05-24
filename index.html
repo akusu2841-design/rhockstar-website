@@ -39,7 +39,6 @@ z-index:-2;
 100%{background-position:0% 50%;}
 }
 
-/* OVERLAY FOR READABILITY */
 .page{
 display:none;
 padding:20px;
@@ -58,14 +57,10 @@ background:rgba(0,0,0,0.75);
 z-index:0;
 }
 
-.page > *{
-position:relative;
-z-index:1;
-}
+.page > *{position:relative;z-index:1;}
 
 .active{display:block}
 
-/* NAV */
 nav{
 position:fixed;
 bottom:10px;
@@ -94,7 +89,6 @@ background:#00ffcc;
 color:#000;
 }
 
-/* CARDS */
 .card{
 background:rgba(255,255,255,0.08);
 padding:15px;
@@ -103,7 +97,6 @@ border-radius:12px;
 backdrop-filter:blur(10px);
 }
 
-/* INPUTS */
 input,textarea,select{
 width:100%;
 padding:10px;
@@ -114,7 +107,6 @@ background:#222;
 color:#fff;
 }
 
-/* BUTTON */
 button{
 width:100%;
 padding:10px;
@@ -127,7 +119,6 @@ cursor:pointer;
 
 button:hover{opacity:0.8}
 
-/* WHATSAPP */
 .wa{
 position:fixed;
 bottom:90px;
@@ -228,7 +219,16 @@ style="background:url('https://images.unsplash.com/photo-1556741533-f6acd647d2fb
 style="background:url('https://images.unsplash.com/photo-1551434678-e076c223a692') center/cover;">
 
 <h2>Admin Panel</h2>
+
+<div class="card" id="adminLoginBox">
+<input id="adminEmail" placeholder="Admin Email">
+<input id="adminPassword" type="password" placeholder="Password">
+<button onclick="adminLogin()">Login as Admin</button>
+</div>
+
+<div id="adminContent" style="display:none;">
 <div id="allOrders"></div>
+</div>
 
 </div>
 
@@ -269,6 +269,27 @@ auth.createUserWithEmailAndPassword(email.value,password.value)
 function login(){
 auth.signInWithEmailAndPassword(email.value,password.value)
 .catch(e=>alert(e.message));
+}
+
+/* ADMIN LOGIN */
+function adminLogin(){
+
+auth.signInWithEmailAndPassword(adminEmail.value, adminPassword.value)
+.then(user=>{
+
+if(user.user.email === "admin@rhockstar.com"){
+document.getElementById("adminLoginBox").style.display="none";
+document.getElementById("adminContent").style.display="block";
+show('admin');
+loadAllOrders();
+}else{
+alert("Not admin");
+auth.signOut();
+}
+
+})
+.catch(e=>alert(e.message));
+
 }
 
 /* SELECT */
@@ -318,7 +339,7 @@ alert("Order successful 🚀");
 handler.openIframe();
 }
 
-/* MY ORDERS */
+/* LOAD USER ORDERS */
 function loadMyOrders(){
 
 if(!auth.currentUser) return;
@@ -342,7 +363,7 @@ Status: ${o.status}
 });
 }
 
-/* ADMIN */
+/* ADMIN ORDERS */
 function loadAllOrders(){
 
 db.collection("orders")
@@ -364,13 +385,15 @@ Status: ${o.status}
 });
 }
 
-/* ✅ FIXED ADMIN LOGIN LOGIC */
+/* AUTH STATE */
 auth.onAuthStateChanged(user=>{
 if(user){
 
 loadMyOrders();
 
 if(user.email === "admin@rhockstar.com"){
+document.getElementById("adminLoginBox").style.display="none";
+document.getElementById("adminContent").style.display="block";
 show('admin');
 loadAllOrders();
 }else{
