@@ -3,28 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rhockstar Nation - Fiverr Clone SaaS</title>
+<title>Rhockstar Nation SaaS Pro</title>
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
 <style>
+
+/* BACKGROUND ANIMATION */
 body{
 margin:0;
 font-family:Arial;
-background:#0b0b0b;
-color:#fff;
+color:white;
+background:linear-gradient(-45deg,#0b0b0b,#111,#1a1a1a,#0b0b0b);
+background-size:400% 400%;
+animation:moveBG 12s ease infinite;
+overflow-x:hidden;
 }
 
+@keyframes moveBG{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* NAV */
 nav{
 position:fixed;
 bottom:10px;
 left:50%;
 transform:translateX(-50%);
-background:#111;
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(10px);
 padding:10px;
 border-radius:40px;
 display:flex;
@@ -46,17 +58,21 @@ background:#00ffcc;
 color:#000;
 }
 
+/* PAGES */
 .page{display:none;padding:20px;min-height:100vh}
 .active{display:block}
 
+/* CARDS */
 .card{
-background:#1a1a1a;
+background:rgba(255,255,255,0.08);
 padding:15px;
 margin:10px 0;
-border-radius:10px;
+border-radius:12px;
+backdrop-filter:blur(10px);
 }
 
-input,select,textarea{
+/* INPUTS */
+input,textarea,select{
 width:100%;
 padding:10px;
 margin:5px 0;
@@ -66,6 +82,7 @@ background:#222;
 color:#fff;
 }
 
+/* BUTTON */
 button{
 width:100%;
 padding:10px;
@@ -78,15 +95,26 @@ cursor:pointer;
 
 button:hover{opacity:0.8}
 
-.small{
-font-size:12px;
-opacity:0.7;
+/* WHATSAPP FLOAT */
+.wa{
+position:fixed;
+bottom:90px;
+right:20px;
+background:#25D366;
+color:#fff;
+padding:15px;
+border-radius:50px;
+text-decoration:none;
+font-weight:bold;
+z-index:9999;
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <nav>
 <button onclick="show('home')">Home</button>
 <button onclick="show('services')">Services</button>
@@ -99,10 +127,8 @@ opacity:0.7;
 <h1>Rhockstar Nation SaaS</h1>
 
 <div class="card">
-<h3>Auth</h3>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
-
 <button onclick="register()">Register</button>
 <button onclick="login()">Login</button>
 </div>
@@ -113,10 +139,27 @@ opacity:0.7;
 
 <h2>Services</h2>
 
+<!-- ADVERT (UPDATED PRICES) -->
+<div class="card">
+<h3>📢 Advert Placement</h3>
+
+<p>
+24 Hours — ₦5,000<br>
+3 Days — ₦12,000<br>
+1 Week — ₦25,000<br>
+1 Month — ₦90,000
+</p>
+
+<button onclick="selectService('Advert - 24 Hours',5000)">24 Hours</button>
+<button onclick="selectService('Advert - 3 Days',12000)">3 Days</button>
+<button onclick="selectService('Advert - 1 Week',25000)">1 Week</button>
+<button onclick="selectService('Advert - 1 Month',90000)">1 Month</button>
+</div>
+
 <div class="card" onclick="selectService('Graphics Design',15000)">Graphics Design ₦15,000</div>
 <div class="card" onclick="selectService('Logo Design',10000)">Logo Design ₦10,000</div>
-<div class="card" onclick="selectService('Certificate Editing',40000)">Certificate Editing ₦40,000</div>
 <div class="card" onclick="selectService('Web Design',120000)">Web Design ₦120,000</div>
+<div class="card" onclick="selectService('Web Development',200000)">Web Development ₦200,000</div>
 
 </div>
 
@@ -126,17 +169,23 @@ opacity:0.7;
 <h2>User Dashboard</h2>
 
 <div class="card">
+
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
-<input id="service" placeholder="Service" readonly>
-<input id="price" placeholder="Price" readonly>
-<textarea id="desc" placeholder="Details"></textarea>
+
+<input id="serviceInput" placeholder="Service" readonly>
+<input id="priceInput" placeholder="Price" readonly>
+
+<textarea id="desc" placeholder="Project details"></textarea>
 
 <button onclick="pay()">Pay & Create Order</button>
+
 </div>
 
+<div class="card">
 <h3>My Orders</h3>
 <div id="myOrders"></div>
+</div>
 
 </div>
 
@@ -147,6 +196,11 @@ opacity:0.7;
 <div id="allOrders"></div>
 
 </div>
+
+<!-- WHATSAPP -->
+<a class="wa" href="https://wa.me/2348074647269" target="_blank">
+💬 WhatsApp
+</a>
 
 <script>
 
@@ -164,14 +218,13 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
 
 let selectedPrice = 0;
 
 /* NAV */
 function show(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
 /* AUTH */
@@ -187,7 +240,7 @@ auth.signInWithEmailAndPassword(email.value,password.value)
 .catch(e=>alert(e.message));
 }
 
-/* SERVICE SELECT */
+/* SELECT SERVICE */
 function selectService(service,price){
 serviceInput.value = service;
 priceInput.value = price;
@@ -225,14 +278,15 @@ time:new Date()
 
 loadMyOrders();
 loadAllOrders();
-alert("Order created");
+alert("Order successful 🚀");
+
 }
 });
 
 handler.openIframe();
 }
 
-/* USER ORDERS */
+/* MY ORDERS */
 function loadMyOrders(){
 
 if(!auth.currentUser) return;
@@ -250,14 +304,13 @@ myOrders.innerHTML+=`
 <div class="card">
 <b>${o.service}</b><br>
 ₦${o.price}<br>
-Status: ${o.status}<br>
-<small>${o.reference}</small>
+Status: ${o.status}
 </div>`;
 });
 });
 }
 
-/* ADMIN PANEL */
+/* ADMIN */
 function loadAllOrders(){
 
 db.collection("orders")
@@ -283,7 +336,6 @@ Status: ${o.status}<br>
 });
 }
 
-/* UPDATE STATUS */
 function updateStatus(id,status){
 db.collection("orders").doc(id).update({
 status:status
