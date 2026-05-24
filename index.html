@@ -39,6 +39,42 @@ z-index:-2;
 100%{background-position:0% 50%;}
 }
 
+/* LOADER */
+#loader{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.75);
+z-index:99999;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+backdrop-filter:blur(8px);
+}
+
+.spinner{
+width:60px;
+height:60px;
+border:5px solid #333;
+border-top:5px solid #00ffcc;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+.loadingText{
+margin-top:15px;
+font-size:16px;
+color:#00ffcc;
+letter-spacing:1px;
+}
+
+/* PAGE */
 .page{
 display:none;
 padding:20px;
@@ -137,6 +173,12 @@ z-index:999;
 
 <body>
 
+<!-- LOADER -->
+<div id="loader">
+<div class="spinner"></div>
+<div class="loadingText">Processing...</div>
+</div>
+
 <nav>
 <button onclick="show('home')">Home</button>
 <button onclick="show('services')">Services</button>
@@ -220,15 +262,7 @@ style="background:url('https://images.unsplash.com/photo-1551434678-e076c223a692
 
 <h2>Admin Panel</h2>
 
-<div class="card" id="adminLoginBox">
-<input id="adminEmail" placeholder="Admin Email">
-<input id="adminPassword" type="password" placeholder="Password">
-<button onclick="adminLogin()">Login as Admin</button>
-</div>
-
-<div id="adminContent" style="display:none;">
 <div id="allOrders"></div>
-</div>
 
 </div>
 
@@ -254,6 +288,14 @@ const db = firebase.firestore();
 
 let selectedPrice = 0;
 
+/* LOADER */
+function showLoader(){
+document.getElementById("loader").style.display="flex";
+}
+function hideLoader(){
+document.getElementById("loader").style.display="none";
+}
+
 /* NAV */
 function show(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -262,34 +304,17 @@ document.getElementById(id).classList.add('active');
 
 /* AUTH */
 function register(){
+showLoader();
 auth.createUserWithEmailAndPassword(email.value,password.value)
-.catch(e=>alert(e.message));
+.then(()=>hideLoader())
+.catch(e=>{hideLoader();alert(e.message);});
 }
 
 function login(){
+showLoader();
 auth.signInWithEmailAndPassword(email.value,password.value)
-.catch(e=>alert(e.message));
-}
-
-/* ADMIN LOGIN */
-function adminLogin(){
-
-auth.signInWithEmailAndPassword(adminEmail.value, adminPassword.value)
-.then(user=>{
-
-if(user.user.email === "admin@rhockstar.com"){
-document.getElementById("adminLoginBox").style.display="none";
-document.getElementById("adminContent").style.display="block";
-show('admin');
-loadAllOrders();
-}else{
-alert("Not admin");
-auth.signOut();
-}
-
-})
-.catch(e=>alert(e.message));
-
+.then(()=>hideLoader())
+.catch(e=>{hideLoader();alert(e.message);});
 }
 
 /* SELECT */
@@ -307,6 +332,8 @@ if(!auth.currentUser){
 alert("Login first");
 return;
 }
+
+showLoader();
 
 let handler = PaystackPop.setup({
 key:"pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0",
@@ -328,6 +355,7 @@ reference:res.reference,
 time:new Date()
 });
 
+hideLoader();
 loadMyOrders();
 loadAllOrders();
 
@@ -339,7 +367,7 @@ alert("Order successful 🚀");
 handler.openIframe();
 }
 
-/* LOAD USER ORDERS */
+/* MY ORDERS */
 function loadMyOrders(){
 
 if(!auth.currentUser) return;
@@ -363,7 +391,7 @@ Status: ${o.status}
 });
 }
 
-/* ADMIN ORDERS */
+/* ADMIN */
 function loadAllOrders(){
 
 db.collection("orders")
@@ -385,15 +413,13 @@ Status: ${o.status}
 });
 }
 
-/* AUTH STATE */
+/* ADMIN CHECK */
 auth.onAuthStateChanged(user=>{
 if(user){
 
 loadMyOrders();
 
 if(user.email === "admin@rhockstar.com"){
-document.getElementById("adminLoginBox").style.display="none";
-document.getElementById("adminContent").style.display="block";
 show('admin');
 loadAllOrders();
 }else{
