@@ -6,9 +6,24 @@
 <title>Rhockstar Nation SaaS</title>
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<div class="loader"></div>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+
+/* RESET */
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial;
+}
+
+/* BACKGROUND ANIMATION */
+body{
+background:linear-gradient(135deg,#0b0b0b,#141414);
+color:#fff;
+min-height:100vh;
+overflow-x:hidden;
+}
 
 body::before{
 content:"";
@@ -17,20 +32,17 @@ width:200%;
 height:200%;
 top:-50%;
 left:-50%;
-background: radial-gradient(circle, rgba(0,255,204,0.1) 10%, transparent 60%);
+background:radial-gradient(circle, rgba(0,255,204,0.1) 10%, transparent 60%);
 animation: moveBg 10s linear infinite;
 z-index:-1;
 }
 
 @keyframes moveBg{
-0%{transform: rotate(0deg);}
-100%{transform: rotate(360deg);}
-}
-background:linear-gradient(135deg,#0b0b0b,#141414);
-color:#fff;
-min-height:100vh;
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
 }
 
+/* NAV */
 .nav{
 display:flex;
 gap:10px;
@@ -38,6 +50,7 @@ padding:10px;
 background:#111;
 position:sticky;
 top:0;
+z-index:10;
 }
 
 .nav button{
@@ -49,37 +62,56 @@ border-radius:8px;
 cursor:pointer;
 }
 
-.nav button:hover{background:#00ffcc;color:#000}
+.nav button:hover{
+background:#00ffcc;
+color:#000;
+}
 
-.page{display:none;padding:20px}
-.active{display:block}
+/* PAGES */
+.page{
+display:none;
+padding:20px;
+}
 
+.active{
+display:block;
+animation:fade 0.4s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
 padding:15px;
 margin:10px 0;
 border-radius:12px;
 border:1px solid rgba(255,255,255,0.08);
+transition:0.3s ease;
 }
 
+.card:hover{
+transform:scale(1.02);
+background:rgba(0,255,204,0.08);
+}
+
+/* INPUTS */
 input,select,textarea{
 width:100%;
 padding:12px;
 margin:6px 0;
 border:none;
 border-radius:10px;
-background:#4b0082;
+background:#222;
 color:#fff;
+outline:none;
 }
 
+/* BUTTONS */
 button{
-transition: 0.3s ease;
-}
-
-button:hover{
-transform: translateY(-3px);
-box-shadow: 0 8px 20px rgba(0,255,204,0.3);
-}
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -88,16 +120,23 @@ border-radius:10px;
 background:#00ffcc;
 font-weight:bold;
 cursor:pointer;
+transition:0.3s ease;
 }
 
-button:hover{background:#00ddb3}
+button:hover{
+transform:translateY(-3px);
+box-shadow:0 8px 20px rgba(0,255,204,0.3);
+background:#00ddb3;
+}
 
-h2{margin-bottom:10px}
+h2{margin-bottom:10px;}
+
 </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <div class="nav">
 <button onclick="show('home')">Home</button>
 <button onclick="show('services')">Services</button>
@@ -107,8 +146,11 @@ h2{margin-bottom:10px}
 
 <!-- HOME -->
 <div id="home" class="page active">
-<h2>Rhockstar Nation </h2>
-<p>Rhockstar Nation is a digital service platform offering professional graphics design, logo creation, document editing, advert placement, and web development. We help individuals and businesses build strong, modern, and creative online presence with fast and reliable delivery.</p>
+<h2>Rhockstar Nation</h2>
+<p>
+Rhockstar Nation is a digital service platform offering professional graphics design, logo creation, document editing, advert placement, and web development.
+We help individuals and businesses build strong, modern, and creative online presence with fast and reliable delivery.
+</p>
 </div>
 
 <!-- SERVICES -->
@@ -169,7 +211,7 @@ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* SERVICE */
+/* SERVICE SELECT */
 function selectService(service){
 document.getElementById("service").value = service;
 show('orders');
@@ -242,7 +284,7 @@ Ref: ${o.ref}
 });
 }
 
-/* FIXED ADMIN LOGIN */
+/* ADMIN LOGIN */
 function loginAdmin(){
 
 const pass = document.getElementById("adminPass").value.trim();
