@@ -10,7 +10,14 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
 
-/* GLOBAL BACKGROUND STYLE */
+body{
+background:linear-gradient(135deg,#0b0b0b,#141414);
+color:#fff;
+min-height:100vh;
+overflow-x:hidden;
+}
+
+/* PAGE BACKGROUNDS */
 .page{
 display:none;
 min-height:100vh;
@@ -18,7 +25,6 @@ padding:20px;
 background-size:cover;
 background-position:center;
 position:relative;
-color:#fff;
 }
 
 .page::before{
@@ -32,10 +38,7 @@ background:rgba(0,0,0,0.75);
 z-index:0;
 }
 
-.page > *{
-position:relative;
-z-index:1;
-}
+.page > *{position:relative;z-index:1}
 
 .active{
 display:block;
@@ -56,6 +59,7 @@ background:#111;
 position:sticky;
 top:0;
 z-index:10;
+flex-wrap:wrap;
 }
 
 .nav button{
@@ -79,8 +83,14 @@ padding:15px;
 margin:10px 0;
 border-radius:12px;
 border:1px solid rgba(255,255,255,0.2);
+transition:0.3s;
 }
 
+.card:hover{
+transform:scale(1.02);
+}
+
+/* INPUTS */
 input,select,textarea{
 width:100%;
 padding:12px;
@@ -91,6 +101,7 @@ background:#222;
 color:#fff;
 }
 
+/* BUTTONS */
 button{
 width:100%;
 padding:12px;
@@ -102,7 +113,23 @@ font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{background:#00ddb3}
+button:hover{
+background:#00ddb3;
+}
+
+/* WHATSAPP BUTTON */
+.wa{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#25D366;
+color:#fff;
+padding:12px 15px;
+border-radius:50px;
+text-decoration:none;
+font-weight:bold;
+z-index:9999;
+}
 
 </style>
 </head>
@@ -115,6 +142,7 @@ button:hover{background:#00ddb3}
 <button onclick="show('services')">Services</button>
 <button onclick="show('orders')">Orders</button>
 <button onclick="show('admin')">Admin</button>
+<button onclick="show('complaint')">Complaint</button>
 </div>
 
 <!-- HOME -->
@@ -122,7 +150,7 @@ button:hover{background:#00ddb3}
 style="background-image:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d');">
 
 <h2>Rhockstar Nation</h2>
-<p>Creative SaaS platform for digital services.</p>
+<p>Digital SaaS platform for design, adverts, and web services.</p>
 </div>
 
 <!-- SERVICES -->
@@ -181,6 +209,24 @@ style="background-image:url('https://images.unsplash.com/photo-1551434678-e076c2
 
 </div>
 
+<!-- COMPLAINT -->
+<div id="complaint" class="page"
+style="background-image:url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85');">
+
+<h2>Complaint Center</h2>
+
+<input id="cname" placeholder="Your Name">
+<textarea id="cmsg" placeholder="Write your complaint"></textarea>
+
+<button onclick="sendComplaint()">Send Complaint</button>
+
+</div>
+
+<!-- WHATSAPP BUTTON -->
+<a class="wa" href="https://wa.me/2348074647269" target="_blank">
+💬 WhatsApp
+</a>
+
 <script>
 
 /* NAV */
@@ -189,13 +235,13 @@ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* SERVICE SELECT */
+/* SERVICE */
 function selectService(service){
 document.getElementById("service").value = service;
 show('orders');
 }
 
-/* SAVE ORDERS */
+/* STORAGE */
 let orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
 /* PAYSTACK */
@@ -213,12 +259,25 @@ return;
 
 let handler = PaystackPop.setup({
 key:"pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0",
-email:prompt("Enter email for receipt"),
+email:prompt("Enter email"),
 amount:5000 * 100,
 currency:"NGN",
 
 callback:function(res){
-saveOrder(nameVal, phoneVal, serviceVal, descVal, res.reference);
+orders.push({
+name:nameVal,
+phone:phoneVal,
+service:serviceVal,
+desc:descVal,
+ref:res.reference,
+status:"Paid"
+});
+
+localStorage.setItem("orders", JSON.stringify(orders));
+
+alert("Order successful 🚀");
+show('admin');
+loadOrders();
 },
 
 onClose:function(){
@@ -229,23 +288,7 @@ alert("Payment cancelled");
 handler.openIframe();
 }
 
-/* SAVE ORDER */
-function saveOrder(name, phone, service, desc, ref){
-
-orders.push({
-name, phone, service, desc,
-ref,
-status:"Paid"
-});
-
-localStorage.setItem("orders", JSON.stringify(orders));
-
-alert("Order saved successfully 🚀");
-show('admin');
-loadOrders();
-}
-
-/* LOAD ORDERS (FIXED) */
+/* LOAD ORDERS */
 function loadOrders(){
 const box = document.getElementById("ordersList");
 box.innerHTML = "";
@@ -269,16 +312,31 @@ Ref: ${o.ref}
 
 /* ADMIN LOGIN */
 function loginAdmin(){
+const pass = document.getElementById("adminPass").value;
 
-const pass = document.getElementById("adminPass").value.trim();
-
-if(pass === "brue199$"){
+if(pass === "1234"){
 document.getElementById("adminBox").style.display = "block";
 loadOrders();
 alert("Login successful 🚀");
 }else{
 alert("Wrong password");
 }
+}
+
+/* COMPLAINT */
+function sendComplaint(){
+const name = document.getElementById("cname").value;
+const msg = document.getElementById("cmsg").value;
+
+if(!name || !msg){
+alert("Fill all fields");
+return;
+}
+
+window.open(
+`https://wa.me/2348074647269?text=Complaint from ${name}%0A${msg}`,
+"_blank"
+);
 }
 
 </script>
