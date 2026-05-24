@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rhockstar Nation SaaS Pro</title>
+<title>Rhockstar Nation SaaS</title>
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -12,22 +12,58 @@
 
 <style>
 
-/* BACKGROUND ANIMATION */
 body{
 margin:0;
 font-family:Arial;
 color:white;
-background:linear-gradient(-45deg,#0b0b0b,#111,#1a1a1a,#0b0b0b);
-background-size:400% 400%;
-animation:moveBG 12s ease infinite;
 overflow-x:hidden;
 }
 
-@keyframes moveBG{
+/* ANIMATED BACKGROUND */
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+top:0;
+left:0;
+background:linear-gradient(-45deg,#0b0b0b,#111,#1a1a1a,#000);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+z-index:-2;
+}
+
+@keyframes bgMove{
 0%{background-position:0% 50%;}
 50%{background-position:100% 50%;}
 100%{background-position:0% 50%;}
 }
+
+/* OVERLAY FOR READABILITY */
+.page{
+display:none;
+padding:20px;
+min-height:100vh;
+position:relative;
+}
+
+.page::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.75);
+z-index:0;
+}
+
+.page > *{
+position:relative;
+z-index:1;
+}
+
+.active{display:block}
 
 /* NAV */
 nav{
@@ -57,10 +93,6 @@ nav button:hover{
 background:#00ffcc;
 color:#000;
 }
-
-/* PAGES */
-.page{display:none;padding:20px;min-height:100vh}
-.active{display:block}
 
 /* CARDS */
 .card{
@@ -95,7 +127,7 @@ cursor:pointer;
 
 button:hover{opacity:0.8}
 
-/* WHATSAPP FLOAT */
+/* WHATSAPP */
 .wa{
 position:fixed;
 bottom:90px;
@@ -106,7 +138,7 @@ padding:15px;
 border-radius:50px;
 text-decoration:none;
 font-weight:bold;
-z-index:9999;
+z-index:999;
 }
 
 </style>
@@ -123,8 +155,10 @@ z-index:9999;
 </nav>
 
 <!-- HOME -->
-<div id="home" class="page active">
-<h1>Rhockstar Nation SaaS</h1>
+<div id="home" class="page active"
+style="background:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d') center/cover;">
+
+<h1>Rhockstar Nation</h1>
 
 <div class="card">
 <input id="email" placeholder="Email">
@@ -132,25 +166,25 @@ z-index:9999;
 <button onclick="register()">Register</button>
 <button onclick="login()">Login</button>
 </div>
+
 </div>
 
 <!-- SERVICES -->
-<div id="services" class="page">
+<div id="services" class="page"
+style="background:url('https://images.unsplash.com/photo-1557683316-973673baf926') center/cover;">
 
 <h2>Services</h2>
 
-<!-- ADVERT (UPDATED PRICES) -->
 <div class="card">
 <h3>📢 Advert Placement</h3>
-
 <p>
-24 Hours — ₦5,000<br>
-3 Days — ₦12,000<br>
-1 Week — ₦25,000<br>
-1 Month — ₦90,000
+24H - ₦5,000<br>
+3 Days - ₦12,000<br>
+1 Week - ₦25,000<br>
+1 Month - ₦90,000
 </p>
 
-<button onclick="selectService('Advert - 24 Hours',5000)">24 Hours</button>
+<button onclick="selectService('Advert - 24H',5000)">24H</button>
 <button onclick="selectService('Advert - 3 Days',12000)">3 Days</button>
 <button onclick="selectService('Advert - 1 Week',25000)">1 Week</button>
 <button onclick="selectService('Advert - 1 Month',90000)">1 Month</button>
@@ -158,18 +192,21 @@ z-index:9999;
 
 <div class="card" onclick="selectService('Graphics Design',15000)">Graphics Design ₦15,000</div>
 <div class="card" onclick="selectService('Logo Design',10000)">Logo Design ₦10,000</div>
-<div class="card" onclick="selectService('Web Design',120000)">Web Design ₦120,000</div>
-<div class="card" onclick="selectService('Web Development',200000)">Web Development ₦200,000</div>
+
+<!-- UPDATED WEB DEVELOPMENT PRICE -->
+<div class="card" onclick="selectService('Web Development (150k - 500k+)',150000)">
+💻 Web Development ₦150,000 – ₦500,000+
+</div>
 
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="page">
+<div id="dashboard" class="page"
+style="background:url('https://images.unsplash.com/photo-1556741533-f6acd647d2fb') center/cover;">
 
 <h2>User Dashboard</h2>
 
 <div class="card">
-
 <input id="name" placeholder="Name">
 <input id="phone" placeholder="Phone">
 
@@ -179,7 +216,6 @@ z-index:9999;
 <textarea id="desc" placeholder="Project details"></textarea>
 
 <button onclick="pay()">Pay & Create Order</button>
-
 </div>
 
 <div class="card">
@@ -190,7 +226,8 @@ z-index:9999;
 </div>
 
 <!-- ADMIN -->
-<div id="admin" class="page">
+<div id="admin" class="page"
+style="background:url('https://images.unsplash.com/photo-1551434678-e076c223a692') center/cover;">
 
 <h2>Admin Panel</h2>
 <div id="allOrders"></div>
@@ -204,7 +241,6 @@ z-index:9999;
 
 <script>
 
-/* FIREBASE */
 const firebaseConfig = {
 apiKey: "AIzaSyCKdJaHy_FUSFbnUkTCm3p7p32sM1E5r7w",
 authDomain: "rhockstar-nation.firebaseapp.com",
@@ -230,17 +266,15 @@ document.getElementById(id).classList.add('active');
 /* AUTH */
 function register(){
 auth.createUserWithEmailAndPassword(email.value,password.value)
-.then(()=>alert("Registered"))
 .catch(e=>alert(e.message));
 }
 
 function login(){
 auth.signInWithEmailAndPassword(email.value,password.value)
-.then(()=>alert("Logged in"))
 .catch(e=>alert(e.message));
 }
 
-/* SELECT SERVICE */
+/* SELECT */
 function selectService(service,price){
 serviceInput.value = service;
 priceInput.value = price;
@@ -248,7 +282,7 @@ selectedPrice = price;
 show('dashboard');
 }
 
-/* PAYSTACK */
+/* PAY */
 function pay(){
 
 if(!auth.currentUser){
@@ -278,6 +312,7 @@ time:new Date()
 
 loadMyOrders();
 loadAllOrders();
+
 alert("Order successful 🚀");
 
 }
@@ -326,23 +361,12 @@ allOrders.innerHTML+=`
 <b>${o.name}</b><br>
 ${o.service}<br>
 ₦${o.price}<br>
-Status: ${o.status}<br>
-
-<button onclick="updateStatus('${d.id}','In Progress')">Start</button>
-<button onclick="updateStatus('${d.id}','Completed')">Complete</button>
-
+Status: ${o.status}
 </div>`;
 });
 });
 }
 
-function updateStatus(id,status){
-db.collection("orders").doc(id).update({
-status:status
-});
-}
-
-/* INIT */
 auth.onAuthStateChanged(user=>{
 if(user){
 loadMyOrders();
