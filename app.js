@@ -55,7 +55,7 @@ return;
 showLoader();
 
 PaystackPop.setup({
-key:"YOUR_PAYSTACK_KEY",
+key:"pk_test_f9c8ed728fac1059de000e81d0a57ce44e59d8d0",
 email:auth.currentUser.email,
 amount:selectedPrice*100,
 currency:"NGN",
