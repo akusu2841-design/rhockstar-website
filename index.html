@@ -1,26 +1,94 @@
-const firebaseConfig = {
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_AUTH_DOMAIN",
-projectId: "YOUR_PROJECT_ID",
-storageBucket: "YOUR_STORAGE_BUCKET",
-messagingSenderId: "YOUR_SENDER_ID",
-appId: "YOUR_APP_ID"
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rhockstar Nation</title>
 
-firebase.initializeApp(firebaseConfig);
+<link rel="stylesheet" href="style.css">
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
 
-/* PAYSTACK KEY */
-const PAYSTACK_KEY = "pk_test_xxxxxxxxxxxxxxxxx";
+<body>
 
-/* CREATE USER PROFILE */
-auth.onAuthStateChanged(user=>{
-if(user){
-db.collection("users").doc(user.uid).set({
-email: user.email,
-role: user.email==="admin@rhockstar.com" ? "admin" : "user"
-},{merge:true});
-}
-});
+<img src="images/logo.jpg" width="200">
+
+<!-- LOADER -->
+<div id="loader" class="loader">
+<div class="spinner"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="show('services')">Services</button>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('admin')">Admin</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active">
+<h1>Rhockstar Nation</h1>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="register()">Register</button>
+<button onclick="login()">Login</button>
+</div>
+
+<!-- SERVICES -->
+<div id="services" class="page">
+
+<div class="card">
+<h3>Services</h3>
+
+<div onclick="selectService('Logo Design',10000)" class="card">Logo Design ₦10,000</div>
+<div onclick="selectService('Graphics Design',15000)" class="card">Graphics Design ₦15,000</div>
+<div onclick="selectService('Web Development',150000)" class="card">Web Development ₦150,000+</div>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+
+<div class="card">
+<h2>Create Order</h2>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+
+<input id="serviceInput" readonly>
+<input id="priceInput" readonly>
+
+<textarea id="desc" placeholder="Project details"></textarea>
+
+<button onclick="pay()">Pay & Order</button>
+</div>
+
+<div class="card">
+<h3>My Orders</h3>
+<div id="myOrders"></div>
+</div>
+
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="page">
+<h2>Admin Panel</h2>
+<div id="allOrders"></div>
+</div>
+
+<a class="wa" href="https://wa.me/2348074647269">WhatsApp</a>
+
+<script src="firebase.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
