@@ -5,30 +5,61 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rhockstar Nation</title>
 
-<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#000;
+color:#fff;
+padding:20px;
+}
+
+.page{
+display:none;
+}
+
+.active{
+display:block;
+}
+
+.card{
+background:#111;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin:5px 0;
+background:#222;
+border:none;
+color:#fff;
+}
+
+button{
+width:100%;
+padding:10px;
+margin-top:10px;
+background:#00ffcc;
+border:none;
+cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
-<img src="images/logo.jpg" width="200">
-
-<!-- LOADER -->
-<div id="loader" class="loader">
-  <div class="spinner"></div>
-</div>
-
-<!-- NAV -->
-<nav>
-<button onclick="show('home')">Home</button>
-<button onclick="show('services')">Services</button>
-<button onclick="show('dashboard')">Dashboard</button>
-<button onclick="show('admin')">Admin</button>
-</nav>
-
-<!-- HOME -->
-<div id="home" class="page active">
 <h1>Rhockstar Nation</h1>
 
+<div id="home" class="page active">
+
+<div class="card">
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 
@@ -36,43 +67,18 @@
 <button onclick="login()">Login</button>
 </div>
 
-<!-- SERVICES -->
-<div id="services" class="page">
-
-<div class="card">
-<h3>Services</h3>
-
-<div onclick="selectService('Logo Design',10000)" class="card">
-Logo Design ₦10,000
 </div>
 
-<div onclick="selectService('Graphics Design',15000)" class="card">
-Graphics Design ₦15,000
-</div>
-
-<div onclick="selectService('Web Development',150000)" class="card">
-Web Development ₦150,000+
-</div>
-
-</div>
-
-</div>
-
-<!-- DASHBOARD -->
 <div id="dashboard" class="page">
 
 <div class="card">
-<h2>Create Order</h2>
-
 <input id="name" placeholder="Name">
-<input id="phone" placeholder="Phone">
 
-<input id="serviceInput" readonly>
-<input id="priceInput" readonly>
+<input id="serviceInput" placeholder="Service">
 
 <textarea id="desc" placeholder="Project details"></textarea>
 
-<button onclick="pay()">Pay & Order</button>
+<button onclick="createOrder()">Create Order</button>
 </div>
 
 <div class="card">
@@ -82,24 +88,136 @@ Web Development ₦150,000+
 
 </div>
 
-<!-- ADMIN -->
-<div id="admin" class="page">
-<h2>Admin Panel</h2>
-<div id="allOrders"></div>
+<script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyCKdJaHy_FUSFbnUkTCm3p7p32sM1E5r7w",
+authDomain: "rhockstar-nation.firebaseapp.com",
+projectId: "rhockstar-nation",
+storageBucket: "rhockstar-nation.firebasestorage.app",
+messagingSenderId: "707658422879",
+appId: "1:707658422879:web:467e0785561454aca999ea"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+function show(id){
+document.querySelectorAll('.page').forEach(p=>{
+p.classList.remove('active');
+});
+
+document.getElementById(id).classList.add('active');
+}
+
+function register(){
+
+auth.createUserWithEmailAndPassword(
+email.value,
+password.value
+)
+
+.then(()=>{
+alert("Registration successful");
+})
+
+.catch(e=>{
+alert(e.message);
+});
+
+}
+
+function login(){
+
+auth.signInWithEmailAndPassword(
+email.value,
+password.value
+)
+
+.then(()=>{
+alert("Login successful");
+})
+
+.catch(e=>{
+alert(e.message);
+});
+
+}
+
+function createOrder(){
+
+if(!auth.currentUser){
+alert("Login first");
+return;
+}
+
+db.collection("orders").add({
+userId: auth.currentUser.uid,
+name: name.value,
+service: serviceInput.value,
+desc: desc.value,
+status: "Pending",
+createdAt: new Date()
+})
+
+.then(()=>{
+alert("Order created");
+});
+
+}
+
+function loadMyOrders(){
+
+if(!auth.currentUser) return;
+
+db.collection("orders")
+.where("userId","==",auth.currentUser.uid)
+
+.onSnapshot(snap=>{
+
+myOrders.innerHTML = "";
+
+snap.forEach(doc=>{
+
+let o = doc.data();
+
+myOrders.innerHTML += `
+<div class="card">
+${o.service}<br>
+${o.status}
 </div>
+`;
 
-<a class="wa" href="https://wa.me/2348074647269" target="_blank">
-WhatsApp
-</a>
+});
 
-<!-- FIREBASE SDKS (MUST BE BEFORE YOUR FILES) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+});
 
-<!-- YOUR FILES (ONLY ONCE) -->
-<script src="firebase.js"></script>
-<script src="app.js"></script>
+}
+
+auth.onAuthStateChanged(user=>{
+
+if(user){
+
+show('dashboard');
+
+db.collection("users").doc(user.uid).set({
+email:user.email,
+role:"user"
+},{merge:true});
+
+loadMyOrders();
+
+}else{
+
+show('home');
+
+}
+
+});
+
+</script>
 
 </body>
 </html>
