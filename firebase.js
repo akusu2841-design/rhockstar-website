@@ -1,3 +1,4 @@
+console.log("🔥 NEW FIREBASE FILE LOADED");
 const firebaseConfig = {
 apiKey: "AIzaSyCKdJaHy_FUSFbnUkTCm3p7p32sM1E5r7w",
   authDomain: "rhockstar-nation.firebaseapp.com",
